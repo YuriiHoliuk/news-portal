@@ -3,6 +3,7 @@
   "rules": {
     "quotemark": [true, "single"],
     "member-access": [true, "no-public"],
-    "ordered-imports": false
+    "ordered-imports": false,
+    "arrow-parens": [false]
   }
 }

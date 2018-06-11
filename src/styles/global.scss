@@ -4,3 +4,10 @@ body {
   background-color: $charcoal;
   font-family: $font-family;
 }
+
+button {
+  border: none;
+  background: none;
+  outline: none;
+  cursor: pointer;
+}

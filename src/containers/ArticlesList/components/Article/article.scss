@@ -1,0 +1,31 @@
+@import "../../../../styles/variables";
+
+.wrapper {
+  margin-bottom: 30px;
+}
+
+.header {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+
+}
+
+.title {
+  color: cornflowerblue;
+  font-size: 24px;
+  text-shadow: 0 0 15px black;
+  margin-right: 20px;
+}
+
+.toggle-btn {
+  color: dodgerblue;
+}
+
+.body {
+  color: white;
+}
+
+.text {
+
+}

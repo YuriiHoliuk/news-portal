@@ -1,15 +1,18 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 
-import logo from '../../logo.png';
 import styles from './app.scss';
+import {ArticlesList} from '../ArticlesList';
 
 export class App extends Component<{}, {}> {
 
     render() {
         return (
             <div className={styles.container}>
-                <img className={styles.logo} src={logo} />
-                <h1 className={styles.title}>React Starter</h1>
+                <h1 className={styles.title}>News Portal</h1>
+
+                <div className={styles.articles}>
+                    <ArticlesList/>
+                </div>
             </div>
         );
     }
