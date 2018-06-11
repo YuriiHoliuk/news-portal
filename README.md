@@ -9,7 +9,8 @@ The template consists of:
 * a typcial project layout structure
 * babel setup and configuration
 * webpack setup and configuration
-* eslint setup and configuration
+* typescript support
+* tslint setup and configuration
 * SCSS setup and configuration
 * the main React components to get started
 
@@ -142,15 +143,15 @@ After running the above command, a browser window will open displaying an intera
 
 ![bundle-analyzer](https://user-images.githubusercontent.com/33935506/36382812-eadf199e-1592-11e8-9681-cf5ccf67951f.png)
 
-### Run ESlint
+### Run TSlint
 
-#### Lint Project Using ESLint
+#### Lint Project Using TSLint
 
   ```bash
   npm run lint
   ```
 
-#### Lint Project Using ESLint, and autofix
+#### Lint Project Using TSLint, and autofix
 
   ```bash
   npm run lint:fix

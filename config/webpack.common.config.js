@@ -1,32 +1,33 @@
+const path = require('path');
 const webpack = require('webpack');
 const CleanPlugin = require('clean-webpack-plugin');
 const HtmlPlugin = require('html-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const autoprefixer = require('autoprefixer');
 const commonPaths = require('./common-paths');
 
 const config = {
     entry: {
-        main: ['./src/index.js']
+        main: ['./src/index.tsx']
     },
     output: {
         filename: '[name].js',
         path: commonPaths.outputPath
     },
+    resolve: {
+        extensions: ['.js', '.jsx', '.ts', '.tsx']
+    },
     module: {
         rules: [
             {
                 enforce: 'pre',
-                test: /\.js$/,
-                loader: 'eslint-loader',
-                options: {
-                    failOnWarning: true,
-                    failOnerror: true
-                },
+                test: /\.tsx?$/,
+                loader: 'tslint-loader',
                 exclude: /node_modules/
             },
             {
-                test: /\.js$/,
-                loader: 'babel-loader',
+                test: /\.tsx?$/,
+                use: ['babel-loader', 'ts-loader'],
                 exclude: /node_modules/
             },
             {
@@ -35,11 +36,33 @@ const config = {
                     fallback: 'style-loader',
                     use: [
                         {
-                            loader: 'css-loader'
+                            loader: 'css-loader',
+                            options: {
+                                module: true,
+                                importLoaders: 1,
+                                localIdentName: '[name]_[local]_[hash:base64]',
+                                sourceMap: true,
+                                minimize: true,
+                                camelCase: true
+                            }
+                        },
+                        {
+                            loader: 'postcss-loader',
+                            options: {
+                                plugins: [
+                                    autoprefixer(),
+                                ],
+                            },
                         },
                         {
                             loader: 'sass-loader'
-                        }
+                        },
+                        // {
+                        //     loader: 'sass-resources-loader',
+                        //     options: {
+                        //         resources: '../../src/styles/**/*.scss'
+                        //     }
+                        // }
                     ]
                 })
             },
@@ -71,7 +94,7 @@ const config = {
     plugins: [
         new webpack.ProgressPlugin(),
         new ExtractTextPlugin('[name].css'),
-        new CleanPlugin(['../public'], { allowExternal: true }),
+        new CleanPlugin(['../docs'], { allowExternal: true }),
         new HtmlPlugin({
             filename: 'index.html',
             template: commonPaths.template,
