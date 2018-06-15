@@ -1,10 +1,12 @@
-import React, { Component, SyntheticEvent } from 'react';
+import React, { Component, SyntheticEvent, createRef, RefObject } from 'react';
+import shave from 'shave';
+import * as _ from 'lodash';
 
 import { IArticle } from '../../../../interfaces';
 import { If } from '../../../../utils/If';
+import { CommentsList } from '../../../../components/CommentsList';
 
 import * as styles from './article.scss';
-import { CommentsList } from '../../../../components/CommentsList';
 
 export interface IArticleProps {
     article: IArticle;
@@ -19,8 +21,36 @@ export class Article extends Component<IArticleProps, IArticleState> {
         isOpened: false,
     };
 
-    toggle = (isOpened: boolean) => (event: SyntheticEvent) => {
-        this.setState(() => ({ isOpened }));
+    bodyRef: RefObject<HTMLParagraphElement> = createRef();
+    maxHeight: number;
+    resizeListener: () => void = _.debounce(() => this.toggleText(this.state.isOpened), 300);
+
+    componentDidMount() {
+        this.maxHeight = parseFloat(window.getComputedStyle(this.bodyRef.current).lineHeight) * 5;
+
+        this.toggleText(this.state.isOpened);
+
+        window.addEventListener('resize', this.resizeListener);
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener('resize', this.resizeListener);
+    }
+
+    componentDidUpdate(prevProps: IArticleProps, prevState: IArticleState) {
+        if (prevState.isOpened === this.state.isOpened) {
+            return;
+        }
+
+        this.toggleText(this.state.isOpened);
+    }
+
+    toggle = (isOpened: boolean) => (event: SyntheticEvent) => this.setState(() => ({ isOpened }));
+
+    toggleText(isOpened: boolean) {
+        const maxHeight = isOpened ? Infinity : this.maxHeight;
+
+        shave(this.bodyRef.current, maxHeight);
     }
 
     render() {
@@ -52,7 +82,7 @@ export class Article extends Component<IArticleProps, IArticleState> {
                 </div>
 
                 <div className={styles.body}>
-                    <p className={styles.text}>{text}</p>
+                    <p ref={this.bodyRef} className={styles.text}>{text}</p>
 
                     <If condition={isOpened && comments && comments.length}>
                         <CommentsList comments={comments}/>
