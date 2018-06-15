@@ -1,10 +1,10 @@
-import React, {Component, SyntheticEvent} from 'react';
+import React, { Component, SyntheticEvent } from 'react';
 
-import {IArticle} from '../../../../interfaces/index';
-import {If} from '../../../../utils/If/index';
+import { IArticle } from '../../../../interfaces';
+import { If } from '../../../../utils/If';
 
 import * as styles from './article.scss';
-import {CommentsList} from '../../../../components/CommentsList/index';
+import { CommentsList } from '../../../../components/CommentsList';
 
 export interface IArticleProps {
     article: IArticle;
@@ -14,18 +14,18 @@ interface IArticleState {
     isOpened: boolean;
 }
 
-export class Article extends Component<IArticle, IArticleState> {
+export class Article extends Component<IArticleProps, IArticleState> {
     state = {
         isOpened: false,
     };
 
     toggle = (isOpened: boolean) => (event: SyntheticEvent) => {
-        this.setState(() => ({isOpened}));
+        this.setState(() => ({ isOpened }));
     }
 
     render() {
-        const {title, text, comments} = this.props;
-        const {isOpened} = this.state;
+        const { title, text, comments } = this.props.article;
+        const { isOpened } = this.state;
 
         return (
             <div className={styles.wrapper}>
@@ -52,12 +52,10 @@ export class Article extends Component<IArticle, IArticleState> {
                 </div>
 
                 <div className={styles.body}>
-                    <If condition={isOpened}>
-                        <p className={styles.text}>{text}</p>
+                    <p className={styles.text}>{text}</p>
 
-                        <If condition={comments && comments.length}>
-                            <CommentsList comments={comments}/>
-                        </If>
+                    <If condition={isOpened && comments && comments.length}>
+                        <CommentsList comments={comments}/>
                     </If>
                 </div>
             </div>

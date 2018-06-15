@@ -4,6 +4,7 @@
     "quotemark": [true, "single"],
     "member-access": [true, "no-public"],
     "ordered-imports": false,
-    "arrow-parens": [false]
+    "arrow-parens": [false],
+    "object-literal-sort-keys": false
   }
 }

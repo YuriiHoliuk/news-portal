@@ -21,6 +21,6 @@ export class ArticlesList extends Component<{}, IArticleState> {
         const {articles} = this.state;
 
         return articles && articles
-            .map((article: IArticle) => <Article key={article.id} {...article}/>);
+            .map((article: IArticle) => <Article key={article.id} article={article}/>);
     }
 }
