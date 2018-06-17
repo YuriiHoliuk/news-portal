@@ -1,7 +1,8 @@
-import React, {Component, SyntheticEvent} from 'react';
-import {IComment} from '../../interfaces/index';
+import React, { Component, SyntheticEvent } from 'react';
+import { IComment } from '../../interfaces';
 import * as styles from './commentsList.scss';
-import {If} from '../../utils/If/index';
+import { If } from '../../utils/If';
+import { CommentWithRemoveModal } from './components/Comment';
 
 export interface ICommentsListProps {
     comments: IComment[];
@@ -17,7 +18,7 @@ export class CommentsList extends Component<ICommentsListProps, ICommentListStat
     };
 
     toggle = (isOpened: boolean) => (event: SyntheticEvent) => {
-        this.setState(() => ({isOpened}));
+        this.setState(() => ({ isOpened }));
     }
 
     render() {
@@ -50,7 +51,7 @@ export class CommentsList extends Component<ICommentsListProps, ICommentListStat
 
                 <If condition={isOpened}>
                     <ul className={styles.comments}>
-                        {comments.map(comment => <li key={comment.id}>{comment.text}</li>)}
+                        {comments.map(comment => <CommentWithRemoveModal key={comment.id} text={comment.text}/>)}
                     </ul>
                 </If>
             </div>

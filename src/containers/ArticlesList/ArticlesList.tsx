@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {IArticle} from '../../interfaces';
-import {Article} from './components/Article';
+import { ArticleWithRemoveModal } from './components/Article';
+
 
 interface IArticleState {
     articles: IArticle[];
@@ -21,6 +22,6 @@ export class ArticlesList extends Component<{}, IArticleState> {
         const {articles} = this.state;
 
         return articles && articles
-            .map((article: IArticle) => <Article key={article.id} article={article}/>);
+            .map((article: IArticle) => <ArticleWithRemoveModal key={article.id} article={article}/>);
     }
 }

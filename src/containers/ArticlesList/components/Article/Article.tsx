@@ -16,7 +16,7 @@ interface IArticleState {
     isOpened: boolean;
 }
 
-export class Article extends Component<IArticleProps, IArticleState> {
+export class Article extends Component<any, IArticleState> {
     state = {
         isOpened: false,
     };
@@ -54,6 +54,7 @@ export class Article extends Component<IArticleProps, IArticleState> {
     }
 
     render() {
+        const { openRemoveModal } = this.props;
         const { title, text, comments } = this.props.article;
         const { isOpened } = this.state;
 
@@ -79,6 +80,13 @@ export class Article extends Component<IArticleProps, IArticleState> {
                             hide article
                         </button>
                     </If>
+
+                    <button
+                        className={styles.toggleBtn}
+                        onClick={openRemoveModal}
+                    >
+                        remove article
+                    </button>
                 </div>
 
                 <div className={styles.body}>
