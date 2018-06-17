@@ -30,6 +30,7 @@
     ]
   },
   "devDependencies": {
+    "@types/lodash": "^4.14.109",
     "@types/react": "^16.3.16",
     "@types/react-dom": "^16.0.6",
     "autoprefixer": "^8.6.0",
@@ -66,8 +67,10 @@
     "webpack-merge": "^4.1.2"
   },
   "dependencies": {
+    "lodash": "^4.17.10",
     "normalize.css": "^8.0.0",
     "react": "^16.4.0",
-    "react-dom": "^16.4.0"
+    "react-dom": "^16.4.0",
+    "shave": "^2.1.3"
   }
 }
