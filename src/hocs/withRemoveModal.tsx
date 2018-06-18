@@ -1,29 +1,36 @@
 import React, { Component, Fragment } from 'react';
+
 import Modal from 'react-modal';
 
 interface IWithRemoveModalState {
     isModalOpened: boolean;
-    removed: boolean;
+}
+
+export interface IWithRemoveModalProps {
+    remove: () => void;
 }
 
 export function withRemoveModal(InnerComponent: any): any {
-    return class extends Component<{}, IWithRemoveModalState> {
+    return class extends Component<IWithRemoveModalProps, IWithRemoveModalState> {
         state = {
             isModalOpened: false,
-            removed: false,
         };
 
         openRemoveModal = () => this.setState({ isModalOpened: true });
 
-        accept = () => this.setState({ isModalOpened: false, removed: true });
+        accept = () => {
+            this.setState({ isModalOpened: false });
+            this.props.remove();
+        }
+
         decline = () => this.setState({ isModalOpened: false });
 
         render() {
-            const { isModalOpened, removed } = this.state;
+            const { isModalOpened } = this.state;
 
             return (
                 <Fragment>
-                    {!removed && <InnerComponent {...this.props} openRemoveModal={this.openRemoveModal}/>}
+                    <InnerComponent {...this.props} openRemoveModal={this.openRemoveModal}/>
 
                     <Modal ariaHideApp={false} isOpen={isModalOpened}>
                         <p>Are you sure you want to remove it?</p>

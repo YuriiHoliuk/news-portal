@@ -1,22 +1,27 @@
-import React, { Component, SyntheticEvent, createRef, RefObject } from 'react';
+import React, { Component, createRef, RefObject } from 'react';
+
 import shave from 'shave';
 import * as _ from 'lodash';
 
-import { IArticle } from '../../../../interfaces';
 import { If } from '../../../../utils/If';
 import { CommentsList } from '../../../../components/CommentsList';
+import { AppContext } from '../../../App';
+
+import { IArticle } from '../../../../interfaces';
 
 import * as styles from './article.scss';
 
 export interface IArticleProps {
     article: IArticle;
+    openRemoveModal: () => void;
+    removeComment: (commentId: string) => void;
 }
 
 interface IArticleState {
     isOpened: boolean;
 }
 
-export class Article extends Component<any, IArticleState> {
+export class Article extends Component<IArticleProps, IArticleState> {
     state = {
         isOpened: false,
     };
@@ -26,7 +31,7 @@ export class Article extends Component<any, IArticleState> {
     resizeListener: () => void = _.debounce(() => this.toggleText(this.state.isOpened), 300);
 
     componentDidMount() {
-        this.maxHeight = parseFloat(window.getComputedStyle(this.bodyRef.current).lineHeight) * 5;
+        this.maxHeight = parseFloat(window.getComputedStyle(this.bodyRef.current).lineHeight) * 2;
 
         this.toggleText(this.state.isOpened);
 
@@ -45,7 +50,7 @@ export class Article extends Component<any, IArticleState> {
         this.toggleText(this.state.isOpened);
     }
 
-    toggle = (isOpened: boolean) => (event: SyntheticEvent) => this.setState(() => ({ isOpened }));
+    toggle = (isOpened: boolean) => () => this.setState(() => ({ isOpened }));
 
     toggleText(isOpened: boolean) {
         const maxHeight = isOpened ? Infinity : this.maxHeight;
@@ -54,7 +59,7 @@ export class Article extends Component<any, IArticleState> {
     }
 
     render() {
-        const { openRemoveModal } = this.props;
+        const { openRemoveModal, removeComment } = this.props;
         const { title, text, comments } = this.props.article;
         const { isOpened } = this.state;
 
@@ -81,19 +86,23 @@ export class Article extends Component<any, IArticleState> {
                         </button>
                     </If>
 
-                    <button
-                        className={styles.toggleBtn}
-                        onClick={openRemoveModal}
-                    >
-                        remove article
-                    </button>
+                    <AppContext.Consumer>
+                        {({ proMode }) => proMode && (
+                            <button
+                                className={styles.toggleBtn}
+                                onClick={openRemoveModal}
+                            >
+                                remove article
+                            </button>
+                        )}
+                    </AppContext.Consumer>
                 </div>
 
                 <div className={styles.body}>
                     <p ref={this.bodyRef} className={styles.text}>{text}</p>
 
                     <If condition={isOpened && comments && comments.length}>
-                        <CommentsList comments={comments}/>
+                        <CommentsList removeComment={removeComment} comments={comments}/>
                     </If>
                 </div>
             </div>

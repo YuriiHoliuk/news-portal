@@ -1,11 +1,15 @@
-import React, { Component, SyntheticEvent } from 'react';
-import { IComment } from '../../interfaces';
-import * as styles from './commentsList.scss';
+import React, { Component } from 'react';
+
 import { If } from '../../utils/If';
 import { CommentWithRemoveModal } from './components/Comment';
 
+import { IComment } from '../../interfaces';
+
+import * as styles from './commentsList.scss';
+
 export interface ICommentsListProps {
     comments: IComment[];
+    removeComment: (commentId: string) => void;
 }
 
 interface ICommentListState {
@@ -17,13 +21,11 @@ export class CommentsList extends Component<ICommentsListProps, ICommentListStat
         isOpened: false,
     };
 
-    toggle = (isOpened: boolean) => (event: SyntheticEvent) => {
-        this.setState(() => ({ isOpened }));
-    }
+    toggle = (isOpened: boolean) => () => this.setState(() => ({ isOpened }));
 
     render() {
         const { isOpened } = this.state;
-        const { comments } = this.props;
+        const { comments, removeComment } = this.props;
 
         return (
             <div className={styles.wrapper}>
@@ -51,7 +53,13 @@ export class CommentsList extends Component<ICommentsListProps, ICommentListStat
 
                 <If condition={isOpened}>
                     <ul className={styles.comments}>
-                        {comments.map(comment => <CommentWithRemoveModal key={comment.id} text={comment.text}/>)}
+                        {comments.map(({ id, text }) => (
+                            <CommentWithRemoveModal
+                                key={id}
+                                remove={removeComment.bind(null, id)}
+                                text={text}
+                            />
+                        ))}
                     </ul>
                 </If>
             </div>

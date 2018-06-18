@@ -1,10 +1,10 @@
 export interface IComment {
-    id: number;
+    id: string;
     text: string;
 }
 
 export interface IArticle {
-    id: number;
+    id: string;
     date: string;
     title: string;
     text: string;
