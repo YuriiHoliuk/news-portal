@@ -1,16 +1,15 @@
-import React, { Component, Context, createContext } from 'react';
+import React, { Component } from 'react';
 
-import { ArticlesList } from '../ArticlesList';
+import ArticlesList from '../components/ArticlesList';
+import AppContext from './AppContext';
 
 import styles from './app.scss';
 
-export const AppContext: Context<IAppState> = createContext({ proMode: false });
-
-interface IAppState {
+export interface IAppState {
     proMode: boolean;
 }
 
-export class App extends Component<{}, IAppState> {
+export default class App extends Component<{}, IAppState> {
 
     state = {
         proMode: false,

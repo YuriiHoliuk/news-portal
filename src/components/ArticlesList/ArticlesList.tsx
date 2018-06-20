@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import { ArticleWithRemoveModal } from './components/Article';
+import Article from '../Article';
 
 import { IArticle } from '../../interfaces';
 
@@ -8,7 +8,7 @@ interface IArticlesListState {
     articles: IArticle[];
 }
 
-export class ArticlesList extends Component<{}, IArticlesListState> {
+export default class ArticlesList extends Component<{}, IArticlesListState> {
     state = {
         articles: null,
     };
@@ -47,7 +47,7 @@ export class ArticlesList extends Component<{}, IArticlesListState> {
 
         return articles && articles
             .map((article: IArticle) => (
-                    <ArticleWithRemoveModal
+                    <Article
                         removeComment={this.removeComment.bind(this, article.id)}
                         remove={this.removeArticle.bind(this, article.id)}
                         key={article.id}

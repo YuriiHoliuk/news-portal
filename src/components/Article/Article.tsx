@@ -3,17 +3,17 @@ import React, { Component, createRef, RefObject } from 'react';
 import shave from 'shave';
 import * as _ from 'lodash';
 
-import { If } from '../../../../utils/If';
-import { CommentsList } from '../../../../components/CommentsList';
-import { AppContext } from '../../../App';
+import { If } from '../../utils';
+import CommentsList from '../CommentsList';
+import AppContext from '../../App/AppContext';
 
-import { IArticle } from '../../../../interfaces';
+import { IArticle } from '../../interfaces';
 
 import * as styles from './article.scss';
 
 export interface IArticleProps {
     article: IArticle;
-    openRemoveModal: () => void;
+    remove: () => void;
     removeComment: (commentId: string) => void;
 }
 
@@ -21,7 +21,7 @@ interface IArticleState {
     isOpened: boolean;
 }
 
-export class Article extends Component<IArticleProps, IArticleState> {
+export default class Article extends Component<IArticleProps, IArticleState> {
     state = {
         isOpened: false,
     };
@@ -59,7 +59,7 @@ export class Article extends Component<IArticleProps, IArticleState> {
     }
 
     render() {
-        const { openRemoveModal, removeComment } = this.props;
+        const { remove, removeComment } = this.props;
         const { title, text, comments } = this.props.article;
         const { isOpened } = this.state;
 
@@ -90,7 +90,7 @@ export class Article extends Component<IArticleProps, IArticleState> {
                         {({ proMode }) => proMode && (
                             <button
                                 className={styles.toggleBtn}
-                                onClick={openRemoveModal}
+                                onClick={remove}
                             >
                                 remove article
                             </button>

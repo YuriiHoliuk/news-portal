@@ -30,7 +30,7 @@ export function withRemoveModal(InnerComponent: any): any {
 
             return (
                 <Fragment>
-                    <InnerComponent {...this.props} openRemoveModal={this.openRemoveModal}/>
+                    <InnerComponent {...this.props} remove={this.openRemoveModal}/>
 
                     <Modal ariaHideApp={false} isOpen={isModalOpened}>
                         <p>Are you sure you want to remove it?</p>

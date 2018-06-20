@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
-import { If } from '../../utils/If';
-import { CommentWithRemoveModal } from './components/Comment';
+import { If } from '../../utils';
+import Comment from '../Comment';
 
 import { IComment } from '../../interfaces';
 
@@ -16,7 +16,7 @@ interface ICommentListState {
     isOpened: boolean;
 }
 
-export class CommentsList extends Component<ICommentsListProps, ICommentListState> {
+export default class CommentsList extends Component<ICommentsListProps, ICommentListState> {
     state = {
         isOpened: false,
     };
@@ -54,7 +54,7 @@ export class CommentsList extends Component<ICommentsListProps, ICommentListStat
                 <If condition={isOpened}>
                     <ul className={styles.comments}>
                         {comments.map(({ id, text }) => (
-                            <CommentWithRemoveModal
+                            <Comment
                                 key={id}
                                 remove={removeComment.bind(null, id)}
                                 text={text}

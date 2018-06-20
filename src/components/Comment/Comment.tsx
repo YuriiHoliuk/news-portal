@@ -1,20 +1,22 @@
 import React, { Fragment, SFC } from 'react';
 
-import { AppContext } from '../../../../containers/App';
+import AppContext from '../../App/AppContext';
 
 export interface ICommentProps {
     text: string;
-    openRemoveModal: () => void;
+    remove: () => void;
 }
 
-export const Comment: SFC<ICommentProps> = ({ text, openRemoveModal }) => (
+const Comment: SFC<ICommentProps> = ({ text, remove }) => (
     <Fragment>
         <li>{text}</li>
 
         <AppContext.Consumer>
             {({ proMode }) => proMode && (
-                <button type='button' onClick={openRemoveModal}>Remove</button>
+                <button type='button' onClick={remove}>Remove</button>
             )}
         </AppContext.Consumer>
     </Fragment>
 );
+
+export default Comment;
