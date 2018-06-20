@@ -4,56 +4,34 @@ import Article from '../Article';
 
 import { IArticle } from '../../interfaces';
 
-interface IArticlesListState {
+interface IArticlesListProps {
     articles: IArticle[];
+    loadArticles: () => any;
+    removeArticle: (articleId: string) => any;
+    removeComment: (articleId: string, commentId: string) => any;
 }
 
-export default class ArticlesList extends Component<{}, IArticlesListState> {
-    state = {
-        articles: null,
-    };
-
+export default class ArticlesList extends Component<IArticlesListProps, {}> {
     componentDidMount() {
-        fetch('http://127.0.0.1:3000/articles')
-            .then(response => response.json())
-            .then((articles: IArticle[]) => this.setState(() => ({ articles })));
-    }
-
-    removeArticle = (articleId: string) => {
-        this.setState((prevState: IArticlesListState) => {
-            return {
-                articles: prevState.articles.filter(({ id }) => id !== articleId),
-            };
-        });
-    }
-
-    removeComment = (articleId: string, commentId: string) => {
-        this.setState((prevState: IArticlesListState) => {
-            return {
-                articles: prevState.articles.map((article: IArticle) => {
-                    return articleId === article.id
-                        ? {
-                            ...article,
-                            comments: article.comments.filter(({ id }) => id !== commentId),
-                        }
-                        : article;
-                }),
-            };
-        });
+        this.props.loadArticles();
     }
 
     render() {
-        const { articles } = this.state;
+        const { articles, removeComment, removeArticle } = this.props;
 
-        return articles && articles
-            .map((article: IArticle) => (
-                    <Article
-                        removeComment={this.removeComment.bind(this, article.id)}
-                        remove={this.removeArticle.bind(this, article.id)}
-                        key={article.id}
-                        article={article}
-                    />
-                ),
-            );
+        return (
+            <div className={'uk-margin-xlarge-bottom'}>
+                {articles && articles
+                    .map((article: IArticle) => (
+                            <Article
+                                removeComment={removeComment.bind(null, article.id)}
+                                remove={removeArticle.bind(null, article.id)}
+                                key={article.id}
+                                article={article}
+                            />
+                        ),
+                    )}
+            </div>
+        );
     }
 }

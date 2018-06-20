@@ -1,22 +1,21 @@
 @import "../styles/variables";
 
 .container {
-  align-items: flex-start;
+  padding: 15px 30px 50px;
+}
+
+.header {
   display: flex;
-  flex-flow: column;
-  height: 100vh;
-  padding: 50px 30px 30px;
-  justify-content: center;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 70px;
+}
+
+.title {
+  margin-bottom: 0;
 }
 
 .articles {
   width: 100%;
-}
-
-.title {
-  color: $smoke;
-  font-size: 32px;
-  text-shadow: 0 0 20px black;
-  text-transform: uppercase;
-  align-self: center;
 }

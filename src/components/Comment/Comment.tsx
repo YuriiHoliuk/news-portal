@@ -1,4 +1,4 @@
-import React, { Fragment, SFC } from 'react';
+import React, { SFC } from 'react';
 
 import AppContext from '../../App/AppContext';
 
@@ -8,15 +8,21 @@ export interface ICommentProps {
 }
 
 const Comment: SFC<ICommentProps> = ({ text, remove }) => (
-    <Fragment>
+    <div className={'uk-margin'}>
         <li>{text}</li>
 
         <AppContext.Consumer>
             {({ proMode }) => proMode && (
-                <button type='button' onClick={remove}>Remove</button>
+                <button
+                    className={'uk-button uk-button-danger uk-button-small'}
+                    type='button'
+                    onClick={remove}
+                >
+                    Remove
+                </button>
             )}
         </AppContext.Consumer>
-    </Fragment>
+    </div>
 );
 
 export default Comment;

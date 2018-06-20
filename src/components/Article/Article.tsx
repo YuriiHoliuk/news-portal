@@ -64,13 +64,13 @@ export default class Article extends Component<IArticleProps, IArticleState> {
         const { isOpened } = this.state;
 
         return (
-            <div className={styles.wrapper}>
-                <div className={styles.header}>
-                    <h2 className={styles.title}>{title}</h2>
+            <div className={'uk-margin-bottom'}>
+                <div className={styles.header + ' uk-margin'}>
+                    <h2 className={'uk-heading-secondary uk-margin-remove-bottom uk-margin-right'}>{title}</h2>
 
                     <If condition={!isOpened}>
                         <button
-                            className={styles.toggleBtn}
+                            className={'uk-button uk-button-default'}
                             onClick={this.toggle(true)}
                         >
                             show article
@@ -79,7 +79,7 @@ export default class Article extends Component<IArticleProps, IArticleState> {
 
                     <If condition={isOpened}>
                         <button
-                            className={styles.toggleBtn}
+                            className={'uk-button uk-button-default'}
                             onClick={this.toggle(false)}
                         >
                             hide article
@@ -89,7 +89,7 @@ export default class Article extends Component<IArticleProps, IArticleState> {
                     <AppContext.Consumer>
                         {({ proMode }) => proMode && (
                             <button
-                                className={styles.toggleBtn}
+                                className={'uk-button uk-button-danger uk-margin-left'}
                                 onClick={remove}
                             >
                                 remove article
@@ -98,8 +98,8 @@ export default class Article extends Component<IArticleProps, IArticleState> {
                     </AppContext.Consumer>
                 </div>
 
-                <div className={styles.body}>
-                    <p ref={this.bodyRef} className={styles.text}>{text}</p>
+                <div>
+                    <p ref={this.bodyRef}>{text}</p>
 
                     <If condition={isOpened && comments && comments.length}>
                         <CommentsList removeComment={removeComment} comments={comments}/>

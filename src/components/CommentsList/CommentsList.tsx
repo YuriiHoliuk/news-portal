@@ -30,11 +30,11 @@ export default class CommentsList extends Component<ICommentsListProps, IComment
         return (
             <div className={styles.wrapper}>
                 <div className={styles.header}>
-                    <p className={styles.title}>Comments ({comments.length})</p>
+                    <p className={'uk-margin-remove-bottom'}>Comments ({comments.length})</p>
 
                     <If condition={!isOpened}>
                         <button
-                            className={styles.toggleBtn}
+                            className={'uk-button uk-button-default uk-button-small'}
                             onClick={this.toggle(true)}
                         >
                             show comments
@@ -43,7 +43,7 @@ export default class CommentsList extends Component<ICommentsListProps, IComment
 
                     <If condition={isOpened}>
                         <button
-                            className={styles.toggleBtn}
+                            className={'uk-button uk-button-default uk-button-small'}
                             onClick={this.toggle(false)}
                         >
                             hide comments
