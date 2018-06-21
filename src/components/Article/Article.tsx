@@ -12,7 +12,7 @@ import { IArticle } from '../../interfaces';
 import * as styles from './article.scss';
 
 export interface IArticleProps {
-    article: IArticle;
+    article: any;
     remove: () => void;
     removeComment: (commentId: string) => void;
 }
@@ -59,8 +59,12 @@ export default class Article extends Component<IArticleProps, IArticleState> {
     }
 
     render() {
-        const { remove, removeComment } = this.props;
-        const { title, text, comments } = this.props.article;
+        const { remove, removeComment, article } = this.props;
+
+        const title = article.get('title');
+        const text = article.get('text');
+        const comments = article.get('comments');
+
         const { isOpened } = this.state;
 
         return (
@@ -101,7 +105,7 @@ export default class Article extends Component<IArticleProps, IArticleState> {
                 <div>
                     <p ref={this.bodyRef}>{text}</p>
 
-                    <If condition={isOpened && comments && comments.length}>
+                    <If condition={isOpened && comments && comments.size}>
                         <CommentsList removeComment={removeComment} comments={comments}/>
                     </If>
                 </div>

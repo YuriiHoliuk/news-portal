@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
+import { Map, List } from 'immutable';
 
 import Article from '../Article';
 
-import { IArticle } from '../../interfaces';
-
 interface IArticlesListProps {
-    articles: IArticle[];
+    articles: List<Map<string, any>>;
     loadArticles: () => any;
     removeArticle: (articleId: string) => any;
     removeComment: (articleId: string, commentId: string) => any;
@@ -19,14 +18,16 @@ export default class ArticlesList extends Component<IArticlesListProps, {}> {
     render() {
         const { articles, removeComment, removeArticle } = this.props;
 
+        console.log('Component', articles);
+
         return (
             <div className={'uk-margin-xlarge-bottom'}>
                 {articles && articles
-                    .map((article: IArticle) => (
+                    .map(article => (
                             <Article
-                                removeComment={removeComment.bind(null, article.id)}
-                                remove={removeArticle.bind(null, article.id)}
-                                key={article.id}
+                                removeComment={removeComment.bind(null, article.get('id'))}
+                                remove={removeArticle.bind(null, article.get('id'))}
+                                key={article.get('id')}
                                 article={article}
                             />
                         ),

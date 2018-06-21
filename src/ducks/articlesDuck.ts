@@ -7,6 +7,7 @@ import {
     REMOVE_COMMENT,
     START_LOAD_ARTICLES,
 } from '../store/actionTypes';
+import { fromJS, Map } from 'immutable';
 
 export function startLoadArticles() {
     return { type: START_LOAD_ARTICLES };
@@ -70,50 +71,49 @@ export interface IArticlesState {
     error: any;
 }
 
-const initialState: IArticlesState = {
+const initialState = fromJS({
     articlesList: [],
     loading: false,
     error: null,
-};
+});
 
 const actionHandlers = {
-    [START_LOAD_ARTICLES]: (state: IArticlesState) => ({ ...state, loading: true } as IArticlesState),
-    [LOADING_ARTICLES_ERROR]: (state: IArticlesState, { payload }) => ({
-        ...state,
+    [START_LOAD_ARTICLES]: state => state.set('loading', true),
+    [LOADING_ARTICLES_ERROR]: (state, { payload }) => state.merge({
         error: payload,
         loading: false,
-    } as IArticlesState),
-    [LOADING_ARTICLES_SUCCESS]: (state: IArticlesState, { payload }) => ({
-        ...state,
-        articlesList: payload,
-        error: null,
-        loading: false,
-    } as IArticlesState),
-    [ADD_ARTICLE]: (state: IArticlesState, { payload }) => {
-        const newArticle: IArticle = {
+    }),
+    [LOADING_ARTICLES_SUCCESS]: (state, { payload }) => {
+        return state.merge({
+            articlesList: fromJS(payload),
+            error: null,
+            loading: false,
+        });
+    },
+    [ADD_ARTICLE]: (state, { payload }) => {
+        const list = state.get('articlesList');
+        const newArticle = Map({
             ...payload,
-            id: state.articlesList[state.articlesList.length - 1].id + 1,
+            id: list.last().get('id') + 1,
             date: Date.now(),
             comments: null,
-        };
+        });
 
-        return { ...state, articlesList: [...state.articlesList, newArticle] } as IArticlesState;
+        return state.set('articlesList', state.get('articlesList').push(newArticle));
     },
-    [REMOVE_ARTICLE]: (state: IArticlesState, { payload: { articleId } }) => {
-        return {
-            ...state,
-            articlesList: state.articlesList.filter(({ id }) => id !== articleId),
-        } as IArticlesState;
+    [REMOVE_ARTICLE]: (state, { payload: { articleId } }) => {
+        return state.set(
+            'articlesList',
+            state.get('articlesList').filter(article => article.get('id') !== articleId),
+        );
     },
-    [REMOVE_COMMENT]: (state: IArticlesState, { payload: { articleId, commentId } }) => {
-        return {
-            ...state,
-            articlesList: state.articlesList.map((article: IArticle) => {
-                return article.id === articleId
-                    ? { ...article, comments: article.comments.filter(({ id }) => id !== commentId) }
-                    : article;
-            }),
-        } as IArticlesState;
+    [REMOVE_COMMENT]: (state, { payload: { articleId, commentId } }) => {
+        return state.set('articlesList', state.get('articlesList').map(article => {
+            const id = article.get('id');
+            return id === articleId
+                ? article.set('comments', article.get('comments').filter(comment => comment.get('id') !== commentId))
+                : article;
+        }));
     },
 };
 

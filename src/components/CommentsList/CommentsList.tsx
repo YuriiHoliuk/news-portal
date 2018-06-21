@@ -3,12 +3,11 @@ import React, { Component } from 'react';
 import { If } from '../../utils';
 import Comment from '../Comment';
 
-import { IComment } from '../../interfaces';
-
 import * as styles from './commentsList.scss';
+import { List, Map } from 'immutable';
 
 export interface ICommentsListProps {
-    comments: IComment[];
+    comments: List<Map<string, any>>;
     removeComment: (commentId: string) => void;
 }
 
@@ -30,7 +29,7 @@ export default class CommentsList extends Component<ICommentsListProps, IComment
         return (
             <div className={styles.wrapper}>
                 <div className={styles.header}>
-                    <p className={'uk-margin-remove-bottom'}>Comments ({comments.length})</p>
+                    <p className={'uk-margin-remove-bottom'}>Comments ({comments.size})</p>
 
                     <If condition={!isOpened}>
                         <button
@@ -53,11 +52,11 @@ export default class CommentsList extends Component<ICommentsListProps, IComment
 
                 <If condition={isOpened}>
                     <ul className={styles.comments}>
-                        {comments.map(({ id, text }) => (
+                        {comments.map(comment => (
                             <Comment
-                                key={id}
-                                remove={removeComment.bind(null, id)}
-                                text={text}
+                                key={comment.get('id')}
+                                remove={removeComment.bind(null, comment.get('id'))}
+                                text={comment.get('text')}
                             />
                         ))}
                     </ul>
