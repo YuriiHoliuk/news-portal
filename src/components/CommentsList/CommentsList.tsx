@@ -3,7 +3,6 @@ import React, { Component } from 'react';
 import { If } from '../../utils';
 import Comment from '../Comment';
 
-import * as styles from './commentsList.scss';
 import { List, Map } from 'immutable';
 
 export interface ICommentsListProps {
@@ -27,8 +26,8 @@ export default class CommentsList extends Component<ICommentsListProps, IComment
         const { comments, removeComment } = this.props;
 
         return (
-            <div className={styles.wrapper}>
-                <div className={styles.header}>
+            <div style={{ fontStyle: 'italic' }}>
+                <div className={'uk-flex uk-flex-between uk-flex-middle'}>
                     <p className={'uk-margin-remove-bottom'}>Comments ({comments.size})</p>
 
                     <If condition={!isOpened}>
@@ -51,7 +50,7 @@ export default class CommentsList extends Component<ICommentsListProps, IComment
                 </div>
 
                 <If condition={isOpened}>
-                    <ul className={styles.comments}>
+                    <ul>
                         {comments.map(comment => (
                             <Comment
                                 key={comment.get('id')}

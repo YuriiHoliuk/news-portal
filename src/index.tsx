@@ -2,12 +2,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
-// COMPONENTS
+
+// STORE
 import store from './store/store';
+
+// COMPONENTS
 import App from './App';
-// STYLES
-import 'normalize.css';
-import './styles/global.scss';
 
 ReactDOM.render(
     <Provider store={store}>

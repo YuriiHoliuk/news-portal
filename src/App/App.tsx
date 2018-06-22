@@ -3,7 +3,6 @@ import React, { Component } from 'react';
 import ArticlesList from '../components/ArticlesList';
 import AppContext from './AppContext';
 
-import styles from './app.scss';
 import AddArticleForm from '../components/AddArticleForm';
 
 export interface IAppState {
@@ -13,7 +12,7 @@ export interface IAppState {
 export default class App extends Component<{}, IAppState> {
 
     state = {
-        proMode: false,
+        proMode: true,
     };
 
     toggleProMode = () => this.setState((prevState: IAppState) => ({ proMode: !prevState.proMode }));
@@ -22,9 +21,9 @@ export default class App extends Component<{}, IAppState> {
         const { proMode } = this.state;
 
         return (
-            <div className={styles.container}>
-                <div className={styles.header}>
-                    <h1 className={'uk-heading-primary ' + styles.title}>
+            <div className={'uk-padding'}>
+                <div className={'uk-flex uk-flex-between uk-flex-middle uk-margin-large-bottom'}>
+                    <h1 className={'uk-heading-primary uk-margin-remove-bottom'}>
                         News Portal
                     </h1>
 
@@ -37,12 +36,10 @@ export default class App extends Component<{}, IAppState> {
                     </button>
                 </div>
 
-                <div className={styles.articles}>
-                    <AppContext.Provider value={{ proMode }}>
-                        <ArticlesList/>
-                        <AddArticleForm/>
-                    </AppContext.Provider>
-                </div>
+                <AppContext.Provider value={{ proMode }}>
+                    <ArticlesList/>
+                    <AddArticleForm/>
+                </AppContext.Provider>
             </div>
         );
     }

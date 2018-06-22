@@ -7,10 +7,6 @@ import { If } from '../../utils';
 import CommentsList from '../CommentsList';
 import AppContext from '../../App/AppContext';
 
-import { IArticle } from '../../interfaces';
-
-import * as styles from './article.scss';
-
 export interface IArticleProps {
     article: any;
     remove: () => void;
@@ -68,8 +64,8 @@ export default class Article extends Component<IArticleProps, IArticleState> {
         const { isOpened } = this.state;
 
         return (
-            <div className={'uk-margin-bottom'}>
-                <div className={styles.header + ' uk-margin'}>
+            <div className={'uk-margin-large-bottom'}>
+                <div className={'uk-flex uk-flex-middle uk-margin'}>
                     <h2 className={'uk-heading-secondary uk-margin-remove-bottom uk-margin-right'}>{title}</h2>
 
                     <If condition={!isOpened}>
