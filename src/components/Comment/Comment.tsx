@@ -8,8 +8,8 @@ export interface ICommentProps {
 }
 
 const Comment: SFC<ICommentProps> = ({ text, remove }) => (
-    <div className='uk-margin'>
-        <li>{text}</li>
+    <li className='uk-margin'>
+        <p className='uk-margin-remove'>{text}</p>
 
         <AppContext.Consumer>
             {({ proMode }) => proMode && (
@@ -22,7 +22,7 @@ const Comment: SFC<ICommentProps> = ({ text, remove }) => (
                 </button>
             )}
         </AppContext.Consumer>
-    </div>
+    </li>
 );
 
 export default Comment;

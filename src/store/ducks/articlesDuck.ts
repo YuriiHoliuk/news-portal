@@ -1,10 +1,11 @@
-import { fromJS, Map } from 'immutable';
+import { fromJS, List, Map } from 'immutable';
 
 import { createReducer } from '../../utils';
 import { IArticle } from '../../interfaces';
 
 import {
     ADD_ARTICLE,
+    ADD_COMMENT,
     LOADING_ARTICLES_ERROR,
     LOADING_ARTICLES_SUCCESS,
     REMOVE_ARTICLE,
@@ -59,6 +60,16 @@ export function removeArticle(articleId: string) {
     };
 }
 
+export function addComment(articleId: number, text: string) {
+    return {
+        type: ADD_COMMENT,
+        payload: {
+            articleId,
+            text,
+        },
+    };
+}
+
 export function removeComment(articleId: string, commentId: string) {
     return {
         type: REMOVE_COMMENT,
@@ -101,12 +112,23 @@ const actionHandlers = {
         'articlesList',
         list => list.filter(article => article.get('id') !== articleId),
     ),
+    [ADD_COMMENT]: (state, { payload: { text, articleId } }) => state.update(
+        'articlesList',
+        list => list.map(article => article.get('id') === articleId
+            ? article.update('comments', comments => {
+                const hasComments = !!comments;
+                const id = hasComments ? comments.last().get('id') + 1 : 1;
+                const newComment = Map({ text, id });
+
+                return hasComments ? comments.push(newComment) : List([newComment]);
+            })
+            : article),
+    ),
     [REMOVE_COMMENT]: (state, { payload: { articleId, commentId } }) => state.update(
         'articlesList',
         list => list.map(article => article.get('id') === articleId
             ? article.update('comments', comments => comments.filter(comment => comment.get('id') !== commentId))
-            : article,
-        ),
+            : article),
     ),
 };
 

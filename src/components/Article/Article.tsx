@@ -12,6 +12,7 @@ export interface IArticleProps {
     article: Map<string, any>;
     remove: () => void;
     removeComment: (commentId: string) => void;
+    addComment: (text: string) => void;
 }
 
 interface IArticleState {
@@ -20,7 +21,7 @@ interface IArticleState {
 
 export default class Article extends Component<IArticleProps, IArticleState> {
     state = {
-        isOpened: false,
+        isOpened: true,
     };
 
     bodyRef: RefObject<HTMLParagraphElement> = createRef();
@@ -56,7 +57,7 @@ export default class Article extends Component<IArticleProps, IArticleState> {
     }
 
     render() {
-        const { remove, removeComment, article } = this.props;
+        const { remove, removeComment, article, addComment } = this.props;
 
         const title = article.get('title');
         const text = article.get('text');
@@ -76,7 +77,6 @@ export default class Article extends Component<IArticleProps, IArticleState> {
                         {isOpened ? 'hide' : 'show'} article
                     </button>
 
-
                     <AppContext.Consumer>
                         {({ proMode }) => proMode && (
                             <button
@@ -91,8 +91,12 @@ export default class Article extends Component<IArticleProps, IArticleState> {
 
                 <p ref={this.bodyRef}>{text}</p>
 
-                <If condition={isOpened && comments && comments.size}>
-                    <CommentsList removeComment={removeComment} comments={comments}/>
+                <If condition={isOpened}>
+                    <CommentsList
+                        addComment={addComment}
+                        removeComment={removeComment}
+                        comments={comments}
+                    />
                 </If>
             </div>
         );

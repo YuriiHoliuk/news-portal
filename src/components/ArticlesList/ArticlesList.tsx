@@ -8,15 +8,16 @@ interface IArticlesListProps {
     loadArticles: () => any;
     removeArticle: (articleId: string) => any;
     removeComment: (articleId: string, commentId: string) => any;
+    addComment: (articleId: string, text: string) => any;
 }
 
-export default class ArticlesList extends Component<IArticlesListProps, {}> {
+export default class ArticlesList extends Component<any, any> {
     componentDidMount() {
         this.props.loadArticles();
     }
 
     render() {
-        const { articles, removeComment, removeArticle } = this.props;
+        const { articles, removeComment, removeArticle, addComment } = this.props;
 
         return (
             <div className='uk-margin-xlarge-bottom'>
@@ -27,6 +28,7 @@ export default class ArticlesList extends Component<IArticlesListProps, {}> {
                             return (
                                 <Article
                                     removeComment={removeComment.bind(null, id)}
+                                    addComment={addComment.bind(null, id)}
                                     remove={removeArticle.bind(null, id)}
                                     key={id}
                                     article={article}
