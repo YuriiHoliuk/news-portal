@@ -1,9 +1,10 @@
-import React, { Component, createRef, Fragment, RefObject } from 'react';
+import React, { Component, Fragment } from 'react';
+import { List, Map } from 'immutable';
 
 import { If } from '../../utils';
-import Comment from '../Comment';
 
-import { List, Map } from 'immutable';
+import Comment from '../Comment';
+import AddCommentForm from '../AddCommentForm/AddCommentForm';
 
 export interface ICommentsListProps {
     comments: List<Map<string, any>>;
@@ -14,26 +15,17 @@ export interface ICommentsListProps {
 export default class CommentsList extends Component<ICommentsListProps, any> {
     state = {
         isOpened: true,
-        newCommentText: '',
     };
-
-    formRef: RefObject<HTMLFormElement> = createRef();
 
     toggle = () => this.setState(prevState => ({ isOpened: !prevState.isOpened }));
 
-    addComment = (event) => {
-        event.preventDefault();
-
-        if (this.formRef.current.checkValidity()) {
-            this.props.addComment(this.state.newCommentText);
-            this.setState({ isOpened: true });
-        }
+    addComment = (text) => {
+        this.props.addComment(text);
+        this.setState({ isOpen: true });
     }
 
-    handleChange = ({ target: { name, value } }) => this.setState({ [name]: value });
-
     render() {
-        const { isOpened, newCommentText } = this.state;
+        const { isOpened } = this.state;
         const { comments, removeComment } = this.props;
 
         return (
@@ -71,23 +63,7 @@ export default class CommentsList extends Component<ICommentsListProps, any> {
                 )}
 
                 <If condition={isOpened || (!comments || (comments && !comments.size))}>
-                    <form className='uk-flex' ref={this.formRef} onSubmit={this.addComment}>
-
-                        <fieldset className='uk-fieldset uk-margin-small-right'>
-                            <input
-                                className='uk-input uk-form-small'
-                                type='text'
-                                name='newCommentText'
-                                value={newCommentText}
-                                onChange={this.handleChange}
-                            />
-                        </fieldset>
-
-                        <button className='uk-button uk-button-primary uk-button-small'>
-                            Add Comment
-                        </button>
-
-                    </form>
+                    <AddCommentForm addComment={this.addComment}/>
                 </If>
             </div>
         );
