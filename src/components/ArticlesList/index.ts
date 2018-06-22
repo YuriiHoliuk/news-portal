@@ -1,11 +1,11 @@
 import { connect } from 'react-redux';
 
-import { loadArticles, removeArticle, removeComment } from '../../ducks/articlesDuck';
+import { loadArticles, removeArticle, removeComment } from '../../store/ducks';
 
 import ArticlesList from './ArticlesList';
 
 export default connect((state: any) => ({
-    articles: state.articles.get('articlesList'),
+    articles: state.get('articles').get('articlesList'),
 }), {
     loadArticles,
     removeArticle,

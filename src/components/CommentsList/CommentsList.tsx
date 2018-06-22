@@ -19,7 +19,7 @@ export default class CommentsList extends Component<ICommentsListProps, IComment
         isOpened: false,
     };
 
-    toggle = (isOpened: boolean) => () => this.setState(() => ({ isOpened }));
+    toggle = () => this.setState((prevState: ICommentListState) => ({ isOpened: !prevState.isOpened }));
 
     render() {
         const { isOpened } = this.state;
@@ -27,37 +27,31 @@ export default class CommentsList extends Component<ICommentsListProps, IComment
 
         return (
             <div style={{ fontStyle: 'italic' }}>
-                <div className={'uk-flex uk-flex-between uk-flex-middle'}>
-                    <p className={'uk-margin-remove-bottom'}>Comments ({comments.size})</p>
+                <div className='uk-flex uk-flex-between uk-flex-middle'>
+                    <p className='uk-margin-remove-bottom'>Comments ({comments.size})</p>
 
-                    <If condition={!isOpened}>
-                        <button
-                            className={'uk-button uk-button-default uk-button-small'}
-                            onClick={this.toggle(true)}
-                        >
-                            show comments
-                        </button>
-                    </If>
-
-                    <If condition={isOpened}>
-                        <button
-                            className={'uk-button uk-button-default uk-button-small'}
-                            onClick={this.toggle(false)}
-                        >
-                            hide comments
-                        </button>
-                    </If>
+                    <button
+                        className='uk-button uk-button-default uk-button-small'
+                        onClick={this.toggle}
+                    >
+                        {isOpened ? 'hide' : 'show'} comments
+                    </button>
                 </div>
 
                 <If condition={isOpened}>
                     <ul>
-                        {comments.map(comment => (
-                            <Comment
-                                key={comment.get('id')}
-                                remove={removeComment.bind(null, comment.get('id'))}
-                                text={comment.get('text')}
-                            />
-                        ))}
+                        {comments.map(comment => {
+                            const id = comment.get('id');
+                            const text = comment.get('text');
+
+                            return (
+                                <Comment
+                                    key={id}
+                                    remove={removeComment.bind(null, id)}
+                                    text={text}
+                                />
+                            );
+                        })}
                     </ul>
                 </If>
             </div>

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Map, List } from 'immutable';
+import { List, Map } from 'immutable';
 
 import Article from '../Article';
 
@@ -18,19 +18,21 @@ export default class ArticlesList extends Component<IArticlesListProps, {}> {
     render() {
         const { articles, removeComment, removeArticle } = this.props;
 
-        console.log('Component', articles);
-
         return (
-            <div className={'uk-margin-xlarge-bottom'}>
+            <div className='uk-margin-xlarge-bottom'>
                 {articles && articles
-                    .map(article => (
-                            <Article
-                                removeComment={removeComment.bind(null, article.get('id'))}
-                                remove={removeArticle.bind(null, article.get('id'))}
-                                key={article.get('id')}
-                                article={article}
-                            />
-                        ),
+                    .map(article => {
+                            const id = article.get('id');
+
+                            return (
+                                <Article
+                                    removeComment={removeComment.bind(null, id)}
+                                    remove={removeArticle.bind(null, id)}
+                                    key={id}
+                                    article={article}
+                                />
+                            );
+                        },
                     )}
             </div>
         );

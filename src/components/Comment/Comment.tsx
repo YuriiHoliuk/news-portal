@@ -8,13 +8,13 @@ export interface ICommentProps {
 }
 
 const Comment: SFC<ICommentProps> = ({ text, remove }) => (
-    <div className={'uk-margin'}>
+    <div className='uk-margin'>
         <li>{text}</li>
 
         <AppContext.Consumer>
             {({ proMode }) => proMode && (
                 <button
-                    className={'uk-button uk-button-danger uk-button-small'}
+                    className='uk-button uk-button-danger uk-button-small'
                     type='button'
                     onClick={remove}
                 >

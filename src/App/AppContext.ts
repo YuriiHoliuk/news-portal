@@ -1,7 +1,6 @@
 import { Context, createContext } from 'react';
 
-import { IAppState } from './App';
-
-const AppContext: Context<IAppState> = createContext({ proMode: false });
+const defaultValue = { proMode: false, toggleProMode: () => null };
+const AppContext: Context<{ proMode: boolean, toggleProMode: () => void }> = createContext(defaultValue);
 
 export default AppContext;

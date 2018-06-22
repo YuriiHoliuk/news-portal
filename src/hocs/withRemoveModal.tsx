@@ -43,14 +43,14 @@ export function withRemoveModal(InnerComponent: any): any {
                     <InnerComponent {...this.props} remove={this.openRemoveModal}/>
 
                     <Modal ariaHideApp={false} style={this.modalStyles} isOpen={isModalOpened}>
-                        <div className={'uk-modal-body'}>
-                            <p className={'uk-modal-title uk-margin-large-bottom'}>
+                        <div className='uk-modal-body'>
+                            <p className='uk-modal-title uk-margin-large-bottom'>
                                 Are you sure you want to remove it?
                             </p>
 
                             <button
                                 type='button'
-                                className={'uk-button uk-button-default uk-margin-right'}
+                                className='uk-button uk-button-default uk-margin-right'
                                 onClick={this.decline}
                             >
                                 Decline
@@ -58,7 +58,7 @@ export function withRemoveModal(InnerComponent: any): any {
 
                             <button
                                 type='button'
-                                className={'uk-button uk-button-primary'}
+                                className='uk-button uk-button-primary'
                                 onClick={this.accept}
                             >
                                 Accept

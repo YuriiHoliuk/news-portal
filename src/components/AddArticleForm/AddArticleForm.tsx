@@ -14,11 +14,7 @@ export default class AddArticleForm extends Component<IAddArticleFormProps, any>
 
     formRef: RefObject<HTMLFormElement> = createRef();
 
-    handleChange = ({ target: { name, value } }) => {
-        this.setState({
-            [name]: value,
-        });
-    }
+    handleChange = ({ target: { name, value } }) => this.setState({ [name]: value });
 
     addArticle = (event: SyntheticEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -35,12 +31,12 @@ export default class AddArticleForm extends Component<IAddArticleFormProps, any>
         return (
             <form onSubmit={this.addArticle} ref={this.formRef}>
 
-                <fieldset className={'uk-fieldset'}>
+                <fieldset className='uk-fieldset'>
 
-                    <legend className={'uk-legend'}>Add new Article</legend>
+                    <legend className='uk-legend'>Add new Article</legend>
 
                     <input
-                        className={'uk-input uk-margin'}
+                        className='uk-input uk-margin'
                         placeholder={'Title'}
                         required={true}
                         value={title}
@@ -50,7 +46,7 @@ export default class AddArticleForm extends Component<IAddArticleFormProps, any>
                     />
 
                     <textarea
-                        className={'uk-textarea uk-margin'}
+                        className='uk-textarea uk-margin'
                         placeholder={'Text'}
                         required={true}
                         id={'text'}
@@ -61,7 +57,7 @@ export default class AddArticleForm extends Component<IAddArticleFormProps, any>
 
                 </fieldset>
 
-                <button className={'uk-button uk-button-primary'}>Add Article</button>
+                <button className='uk-button uk-button-primary'>Add Article</button>
             </form>
         );
     }
