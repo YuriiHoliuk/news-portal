@@ -16,6 +16,16 @@ export function withRemoveModal(InnerComponent: any): any {
             isModalOpened: false,
         };
 
+        modalStyles = {
+            content: {
+                maxWidth: '600px',
+                maxHeight: '200px',
+                top: '50%',
+                left: '50%',
+                transform: 'translate(-50%, -50%)',
+            },
+        };
+
         openRemoveModal = () => this.setState({ isModalOpened: true });
 
         accept = () => {
@@ -32,11 +42,28 @@ export function withRemoveModal(InnerComponent: any): any {
                 <Fragment>
                     <InnerComponent {...this.props} remove={this.openRemoveModal}/>
 
-                    <Modal ariaHideApp={false} isOpen={isModalOpened}>
-                        <p>Are you sure you want to remove it?</p>
+                    <Modal ariaHideApp={false} style={this.modalStyles} isOpen={isModalOpened}>
+                        <div className={'uk-modal-body'}>
+                            <p className={'uk-modal-title uk-margin-large-bottom'}>
+                                Are you sure you want to remove it?
+                            </p>
 
-                        <button type='button' onClick={this.decline}>Decline</button>
-                        <button type='button' onClick={this.accept}>Accept</button>
+                            <button
+                                type='button'
+                                className={'uk-button uk-button-default uk-margin-right'}
+                                onClick={this.decline}
+                            >
+                                Decline
+                            </button>
+
+                            <button
+                                type='button'
+                                className={'uk-button uk-button-primary'}
+                                onClick={this.accept}
+                            >
+                                Accept
+                            </button>
+                        </div>
                     </Modal>
                 </Fragment>
             );
