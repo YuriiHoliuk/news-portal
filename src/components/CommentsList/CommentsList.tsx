@@ -14,14 +14,14 @@ export interface ICommentsListProps {
 
 export default class CommentsList extends Component<ICommentsListProps, any> {
     state = {
-        isOpened: true,
+        isOpened: false,
     };
 
     toggle = () => this.setState(prevState => ({ isOpened: !prevState.isOpened }));
 
     addComment = (text) => {
         this.props.addComment(text);
-        this.setState({ isOpen: true });
+        this.setState({ isOpened: true });
     }
 
     render() {

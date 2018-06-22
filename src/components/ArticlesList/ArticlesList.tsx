@@ -6,12 +6,12 @@ import Article from '../Article';
 interface IArticlesListProps {
     articles: List<Map<string, any>>;
     loadArticles: () => any;
-    removeArticle: (articleId: string) => any;
-    removeComment: (articleId: string, commentId: string) => any;
-    addComment: (articleId: string, text: string) => any;
+    removeArticle: (articleId: number) => any;
+    removeComment: (articleId: number, commentId: string) => any;
+    addComment: (articleId: number, text: string) => any;
 }
 
-export default class ArticlesList extends Component<any, any> {
+export default class ArticlesList extends Component<IArticlesListProps, any> {
     componentDidMount() {
         this.props.loadArticles();
     }

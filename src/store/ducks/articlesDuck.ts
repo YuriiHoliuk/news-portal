@@ -51,7 +51,7 @@ export function addArticle(newArticle: Partial<IArticle>) {
     };
 }
 
-export function removeArticle(articleId: string) {
+export function removeArticle(articleId: number) {
     return {
         type: REMOVE_ARTICLE,
         payload: {
@@ -70,7 +70,7 @@ export function addComment(articleId: number, text: string) {
     };
 }
 
-export function removeComment(articleId: string, commentId: string) {
+export function removeComment(articleId: number, commentId: string) {
     return {
         type: REMOVE_COMMENT,
         payload: {
@@ -99,14 +99,16 @@ const actionHandlers = {
         loading: false,
     }),
     [ADD_ARTICLE]: (state, { payload }) => state.update('articlesList', list => {
+        const hasArticles = !!list && !!list.size;
+        const id = hasArticles ? list.last().get('id') + 1 : 1;
         const newArticle = Map({
             ...payload,
-            id: list.last().get('id') + 1,
+            id,
             date: Date.now(),
             comments: null,
         });
 
-        return list.push(newArticle);
+        return hasArticles ? list.push(newArticle) : List([newArticle]);
     }),
     [REMOVE_ARTICLE]: (state, { payload: { articleId } }) => state.update(
         'articlesList',
@@ -116,7 +118,7 @@ const actionHandlers = {
         'articlesList',
         list => list.map(article => article.get('id') === articleId
             ? article.update('comments', comments => {
-                const hasComments = !!comments;
+                const hasComments = !!comments && !!comments.size;
                 const id = hasComments ? comments.last().get('id') + 1 : 1;
                 const newComment = Map({ text, id });
 

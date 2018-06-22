@@ -17,6 +17,7 @@ export default class AddCommentForm extends Component<IAddCommentFormProps, any>
 
         if (this.formRef.current.checkValidity()) {
             this.props.addComment(this.state.newCommentText);
+            this.setState({ newCommentText: '' });
         }
     }
 

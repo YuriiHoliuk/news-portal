@@ -5,8 +5,8 @@ import * as _ from 'lodash';
 import { Map } from 'immutable';
 
 import { If } from '../../utils';
-import CommentsList from '../CommentsList';
 import AppContext from '../../App/AppContext';
+import CommentsList from '../CommentsList';
 
 export interface IArticleProps {
     article: Map<string, any>;
@@ -21,7 +21,7 @@ interface IArticleState {
 
 export default class Article extends Component<IArticleProps, IArticleState> {
     state = {
-        isOpened: true,
+        isOpened: false,
     };
 
     bodyRef: RefObject<HTMLParagraphElement> = createRef();

@@ -1,8 +1,12 @@
-import React from 'react';
+import React, { SFC } from 'react';
 
 import AppContext from '../../App/AppContext';
 
-const AppHeader = ({ title }) => (
+export interface IAppHeaderProps {
+    title: string;
+}
+
+const AppHeader: SFC<IAppHeaderProps> = ({ title }) => (
     <AppContext.Consumer>
         {({ proMode, toggleProMode }) => (
             <div className='uk-flex uk-flex-between uk-flex-middle uk-margin-large-bottom'>

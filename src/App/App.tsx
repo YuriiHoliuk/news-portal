@@ -4,7 +4,7 @@ import ArticlesList from '../components/ArticlesList';
 import AppContext from './AppContext';
 
 import AddArticleForm from '../components/AddArticleForm';
-import AppHeader from '../components/AppHeader/AppHeader';
+import AppHeader from '../components/AppHeader';
 
 export interface IAppState {
     proMode: boolean;
@@ -13,7 +13,7 @@ export interface IAppState {
 export default class App extends Component<{}, IAppState> {
 
     state = {
-        proMode: true,
+        proMode: false,
     };
 
     toggleProMode = () => this.setState((prevState: IAppState) => ({ proMode: !prevState.proMode }));
