@@ -4,12 +4,15 @@ import { List, Map } from 'immutable';
 import { If } from '../../utils';
 
 import Comment from '../Comment';
-import AddCommentForm from '../AddCommentForm/AddCommentForm';
+import AddCommentForm from '../AddCommentForm';
+import AppContext from '../../App/AppContext';
 
 export interface ICommentsListProps {
     comments: List<Map<string, any>>;
     removeComment: (commentId: string) => void;
     addComment: (text: string) => void;
+    addingComment: boolean;
+    removingCommentId: string;
 }
 
 export default class CommentsList extends Component<ICommentsListProps, any> {
@@ -26,10 +29,10 @@ export default class CommentsList extends Component<ICommentsListProps, any> {
 
     render() {
         const { isOpened } = this.state;
-        const { comments, removeComment } = this.props;
+        const { comments, removeComment, addingComment, removingCommentId } = this.props;
 
         return (
-            <div style={{ fontStyle: 'italic' }}>
+            <div className='uk-margin-small-top' style={{ fontStyle: 'italic' }}>
                 {comments && !!comments.size && (
                     <Fragment>
                         <div className='uk-flex uk-flex-between uk-flex-middle'>
@@ -47,10 +50,11 @@ export default class CommentsList extends Component<ICommentsListProps, any> {
                             <ul>
                                 {comments.map(comment => {
                                     const id = comment.get('id');
-                                    const text = comment.get('text');
+                                    const text = comment.get('comment');
 
                                     return (
                                         <Comment
+                                            removing={removingCommentId === id}
                                             key={id}
                                             remove={removeComment.bind(null, id)}
                                             text={text}
@@ -62,9 +66,13 @@ export default class CommentsList extends Component<ICommentsListProps, any> {
                     </Fragment>
                 )}
 
-                <If condition={isOpened || (!comments || (comments && !comments.size))}>
-                    <AddCommentForm addComment={this.addComment}/>
-                </If>
+                <AppContext.Consumer>
+                    {({ proMode }) => proMode && (
+                        <If condition={isOpened || (!comments || (comments && !comments.size))}>
+                            <AddCommentForm loading={addingComment} addComment={this.addComment}/>
+                        </If>
+                    )}
+                </AppContext.Consumer>
             </div>
         );
     }

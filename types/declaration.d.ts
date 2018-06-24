@@ -22,3 +22,5 @@ declare module '*.gif' {
     const content: string;
     export  = content;
 }
+
+export type HttpMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';

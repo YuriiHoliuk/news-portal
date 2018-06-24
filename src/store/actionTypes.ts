@@ -1,7 +1,16 @@
+export const START = ' START';
+export const SUCCESS = ' SUCCESS';
+export const ERROR = ' ERROR';
+
+export const LOAD_ARTICLES = 'LOAD ARTICLES';
+export const ADD_ARTICLE = 'ADD ARTICLE';
 export const REMOVE_ARTICLE = 'REMOVE ARTICLE';
+
 export const REMOVE_COMMENT = 'REMOVE COMMENT';
 export const ADD_COMMENT = 'ADD COMMENT';
-export const START_LOAD_ARTICLES = 'START LOAD ARTICLES';
-export const LOADING_ARTICLES_SUCCESS = 'LOADING ARTICLES SUCCESS';
-export const LOADING_ARTICLES_ERROR = 'LOADING ARTICLES ERROR';
-export const ADD_ARTICLE = 'ADD ARTICLE';
+
+export const SIGN_IN = 'SIGN IN';
+export const SIGN_UP = 'SIGN UP';
+export const SIGN_OUT = 'SIGN OUT';
+
+export const GET_ACCOUNT = 'GET ACCOUNT';

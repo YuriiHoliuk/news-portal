@@ -3,11 +3,12 @@ import { composeWithDevTools } from 'redux-devtools-extension';
 import thunk from 'redux-thunk';
 
 import rootReducer from './rootReducer';
+import { apiThunk } from './middlewares';
 
 const store = createStore(
     rootReducer,
     composeWithDevTools(
-        applyMiddleware(thunk),
+        applyMiddleware(apiThunk, thunk),
     ),
 );
 
