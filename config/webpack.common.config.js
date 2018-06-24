@@ -94,7 +94,7 @@ const config = {
     plugins: [
         new webpack.ProgressPlugin(),
         new ExtractTextPlugin('[name].css'),
-        new CleanPlugin(['../docs'], { allowExternal: true }),
+        new CleanPlugin(['../dist'], { allowExternal: true }),
         new HtmlPlugin({
             filename: 'index.html',
             template: commonPaths.template,

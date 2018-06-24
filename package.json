@@ -16,7 +16,9 @@
     "lint": "tslint 'src/**/*.ts*'; exit 0",
     "lint:fix": "tslint 'src/**/*.ts*' --fix; exit 0",
     "start": "npm run serve:dev",
-    "test": "echo \"No tests available\"; exit 0"
+    "test": "echo \"No tests available\"; exit 0",
+    "deploy": "firebase deploy --only functions",
+    "build:deploy": "npm run build:prod && npm run deploy"
   },
   "repository": {
     "type": "git",
