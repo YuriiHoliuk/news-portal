@@ -18,7 +18,8 @@
     "start": "npm run serve:dev",
     "test": "echo \"No tests available\"; exit 0",
     "deploy": "firebase deploy --only functions",
-    "build:deploy": "npm run build:prod && npm run deploy"
+    "build:deploy": "npm run build:prod && npm run deploy",
+    "deploy:ci": "./node_modules/.bin/firebase deploy --only hosting --token=$FIREBASE_DEPLOY_TOKEN"
   },
   "repository": {
     "type": "git",
@@ -47,6 +48,7 @@
     "css-loader": "^0.28.11",
     "extract-text-webpack-plugin": "^4.0.0-beta.0",
     "file-loader": "^1.1.11",
+    "firebase-tools": "^3.19.0",
     "html-webpack-plugin": "^3.2.0",
     "json-server": "^0.14.0",
     "live-server": "^1.2.0",
