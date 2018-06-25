@@ -1,7 +1,9 @@
 import React, { Component, createRef, RefObject } from 'react';
+import Button from '../Button';
 
 export interface IAddCommentFormProps {
     addComment: (text: string) => void;
+    loading: boolean;
 }
 
 export default class AddCommentForm extends Component<IAddCommentFormProps, any> {
@@ -25,6 +27,7 @@ export default class AddCommentForm extends Component<IAddCommentFormProps, any>
 
     render() {
         const { newCommentText } = this.state;
+        const { loading } = this.props;
 
         return (
             <form className='uk-flex' ref={this.formRef} onSubmit={this.addComment}>
@@ -40,9 +43,14 @@ export default class AddCommentForm extends Component<IAddCommentFormProps, any>
                     />
                 </fieldset>
 
-                <button className='uk-button uk-button-primary uk-button-small'>
+                <Button
+                    loading={loading}
+                    spinnerSize={0.5}
+                    type='submit'
+                    className='uk-button uk-button-primary uk-button-small'
+                >
                     Add Comment
-                </button>
+                </Button>
 
             </form>
         );

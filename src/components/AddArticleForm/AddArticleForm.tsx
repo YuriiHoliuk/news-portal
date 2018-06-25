@@ -1,9 +1,11 @@
 import React, { Component, createRef, RefObject, SyntheticEvent } from 'react';
 
 import { IArticle } from '../../interfaces';
+import Button from '../Button';
 
 export interface IAddArticleFormProps {
     addArticle: (newArticle: Partial<IArticle>) => any;
+    loading: boolean;
 }
 
 export default class AddArticleForm extends Component<IAddArticleFormProps, any> {
@@ -27,6 +29,7 @@ export default class AddArticleForm extends Component<IAddArticleFormProps, any>
 
     render() {
         const { title, text } = this.state;
+        const { loading } = this.props;
 
         return (
             <form onSubmit={this.addArticle} ref={this.formRef}>
@@ -57,7 +60,9 @@ export default class AddArticleForm extends Component<IAddArticleFormProps, any>
 
                 </fieldset>
 
-                <button className='uk-button uk-button-primary'>Add Article</button>
+                <Button type='submit' className='uk-button uk-button-primary' loading={loading}>
+                    Add Article
+                </Button>
             </form>
         );
     }

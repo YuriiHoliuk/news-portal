@@ -42,6 +42,7 @@ class Http {
             method,
             headers: {
                 'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*',
             },
         };
 
@@ -52,4 +53,4 @@ class Http {
     }
 }
 
-export const http = new Http(API.baseURL_DEV);
+export const http = new Http(API.baseURL);

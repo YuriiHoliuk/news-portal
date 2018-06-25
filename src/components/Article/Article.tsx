@@ -7,12 +7,16 @@ import { Map } from 'immutable';
 import { If } from '../../utils';
 import AppContext from '../../App/AppContext';
 import CommentsList from '../CommentsList';
+import Button from '../Button';
 
 export interface IArticleProps {
     article: Map<string, any>;
     remove: () => void;
     removeComment: (commentId: string) => void;
     addComment: (text: string) => void;
+    addingComment: boolean;
+    removing: boolean;
+    removingCommentId: string;
 }
 
 interface IArticleState {
@@ -57,7 +61,7 @@ export default class Article extends Component<IArticleProps, IArticleState> {
     }
 
     render() {
-        const { remove, removeComment, article, addComment } = this.props;
+        const { remove, removeComment, article, addComment, addingComment, removing, removingCommentId } = this.props;
 
         const title = article.get('title');
         const text = article.get('text');
@@ -79,12 +83,13 @@ export default class Article extends Component<IArticleProps, IArticleState> {
 
                     <AppContext.Consumer>
                         {({ proMode }) => proMode && (
-                            <button
+                            <Button
+                                loading={removing}
                                 className='uk-button uk-button-danger uk-margin-left'
                                 onClick={remove}
                             >
                                 remove article
-                            </button>
+                            </Button>
                         )}
                     </AppContext.Consumer>
                 </div>
@@ -93,6 +98,8 @@ export default class Article extends Component<IArticleProps, IArticleState> {
 
                 <If condition={isOpened}>
                     <CommentsList
+                        removingCommentId={removingCommentId}
+                        addingComment={addingComment}
                         addComment={addComment}
                         removeComment={removeComment}
                         comments={comments}

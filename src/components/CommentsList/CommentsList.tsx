@@ -4,12 +4,14 @@ import { List, Map } from 'immutable';
 import { If } from '../../utils';
 
 import Comment from '../Comment';
-import AddCommentForm from '../AddCommentForm/AddCommentForm';
+import AddCommentForm from '../AddCommentForm';
 
 export interface ICommentsListProps {
     comments: List<Map<string, any>>;
     removeComment: (commentId: string) => void;
     addComment: (text: string) => void;
+    addingComment: boolean;
+    removingCommentId: string;
 }
 
 export default class CommentsList extends Component<ICommentsListProps, any> {
@@ -26,7 +28,7 @@ export default class CommentsList extends Component<ICommentsListProps, any> {
 
     render() {
         const { isOpened } = this.state;
-        const { comments, removeComment } = this.props;
+        const { comments, removeComment, addingComment, removingCommentId } = this.props;
 
         return (
             <div style={{ fontStyle: 'italic' }}>
@@ -51,6 +53,7 @@ export default class CommentsList extends Component<ICommentsListProps, any> {
 
                                     return (
                                         <Comment
+                                            removing={removingCommentId === id}
                                             key={id}
                                             remove={removeComment.bind(null, id)}
                                             text={text}
@@ -63,7 +66,7 @@ export default class CommentsList extends Component<ICommentsListProps, any> {
                 )}
 
                 <If condition={isOpened || (!comments || (comments && !comments.size))}>
-                    <AddCommentForm addComment={this.addComment}/>
+                    <AddCommentForm loading={addingComment} addComment={this.addComment}/>
                 </If>
             </div>
         );
