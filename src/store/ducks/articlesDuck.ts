@@ -4,12 +4,14 @@ import { createReducer, http } from '../../utils';
 import { IArticle } from '../../interfaces';
 
 import {
-    ADD_ARTICLE,
+    ADD_ARTICLE_ERROR,
+    ADD_ARTICLE_SUCCESS,
     ADD_COMMENT,
     LOADING_ARTICLES_ERROR,
     LOADING_ARTICLES_SUCCESS,
     REMOVE_ARTICLE,
     REMOVE_COMMENT,
+    START_ADD_ARTICLE,
     START_LOAD_ARTICLES,
 } from '../actionTypes';
 import { API } from '../../api';
@@ -44,11 +46,35 @@ export const loadArticles = () => dispatch => {
         );
 };
 
-export function addArticle(newArticle: Partial<IArticle>) {
+export function startAddArticle(newArticle: Partial<IArticle>) {
     return {
-        type: ADD_ARTICLE,
+        type: START_ADD_ARTICLE,
         payload: newArticle,
     };
+}
+
+export function addArticleError(error: any) {
+    return {
+        type: ADD_ARTICLE_ERROR,
+        payload: error,
+    };
+}
+
+export function addArticleSuccess(article: IArticle) {
+    return {
+        type: ADD_ARTICLE_SUCCESS,
+        payload: article,
+    };
+}
+
+export const addArticle = (newArticle: Partial<IArticle>) => dispatch => {
+    dispatch(startAddArticle(newArticle));
+
+    return http.post(API.articles, newArticle)
+        .then(
+            (addedArticle: IArticle) => dispatch(addArticleSuccess(addedArticle)),
+            error => dispatch(addArticleError(error)),
+        );
 }
 
 export function removeArticle(articleId: number) {
@@ -83,33 +109,44 @@ export function removeComment(articleId: number, commentId: string) {
 // Reducer
 const initialState = fromJS({
     articlesList: [],
-    loading: false,
-    error: null,
+    loadingArticles: false,
+    errorLoadArticles: null,
+
+    addingArticle: false,
+    errorAddArticle: null,
 });
 
 const actionHandlers = {
-    [START_LOAD_ARTICLES]: state => state.set('loading', true),
+    [START_LOAD_ARTICLES]: state => state.set('loadingArticles', true),
     [LOADING_ARTICLES_ERROR]: (state, { payload }) => state.merge({
-        error: payload,
-        loading: false,
+        errorLoadingArticles: payload,
+        loadArticles: false,
     }),
     [LOADING_ARTICLES_SUCCESS]: (state, { payload }) => state.merge({
         articlesList: fromJS(payload),
-        error: null,
-        loading: false,
+        errorLoadingArticles: null,
+        loadArticles: false,
     }),
-    [ADD_ARTICLE]: (state, { payload }) => state.update('articlesList', list => {
-        const hasArticles = !!list && !!list.size;
-        const id = hasArticles ? list.last().get('id') + 1 : 1;
-        const newArticle = Map({
-            ...payload,
-            id,
-            date: Date.now(),
-            comments: null,
-        });
+    [START_ADD_ARTICLE]: state => state.set('addingArticle', true),
+    [ADD_ARTICLE_ERROR]: (state, { payload }) => state.merge({
+        addingArticle: false,
+        errorAddArticle: payload,
+    }),
+    [ADD_ARTICLE_SUCCESS]: (state, { payload }) => state
+        .set('addingArticle', false)
+        .set('errorAddArticle', null)
+        .update('articlesList', list => {
+            const hasArticles = !!list && !!list.size;
+            const id = hasArticles ? list.last().get('id') + 1 : 1;
+            const newArticle = Map({
+                ...payload,
+                id,
+                date: Date.now(),
+                comments: null,
+            });
 
-        return hasArticles ? list.push(newArticle) : List([newArticle]);
-    }),
+            return hasArticles ? list.push(newArticle) : List([newArticle]);
+        }),
     [REMOVE_ARTICLE]: (state, { payload: { articleId } }) => state.update(
         'articlesList',
         list => list.filter(article => article.get('id') !== articleId),
