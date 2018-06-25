@@ -38,12 +38,13 @@ class Http {
     private request(url: string, method: HttpMethod, query?: { [key: string]: string | number }, body?: any) {
         const queryString = query ? Http.transformQuery(query) : '';
 
+        const headers = new Headers();
+        headers.append('Content-Type', 'application/json');
+
         let options: any = {
             method,
-            headers: {
-                'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin': '*',
-            },
+            mode: 'cors',
+            headers,
         };
 
         options = body ? { ...options, body: JSON.stringify(body) } : options;
