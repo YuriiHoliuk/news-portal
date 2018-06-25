@@ -36,7 +36,7 @@ export const loadArticles = () => dispatch => {
 
     dispatch(startLoadArticles());
 
-    return fetch('http://127.0.0.1:3000/articles')
+    return fetch('https://react-express-news-portal.herokuapp.com/articles')
         .then(response => response.json())
         .then(
             (articlesList: IArticle[]) => dispatch(loadingArticlesSuccess(articlesList)),
