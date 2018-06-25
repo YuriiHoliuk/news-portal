@@ -37,7 +37,13 @@ class Http {
 
     private request(url: string, method: HttpMethod, body: any, query?: { [key: string]: string | number }) {
         const queryString = Http.transformQuery(query);
-        const options = method === 'GET' ? null : { method, body: JSON.stringify(body) };
+        const options =  {
+            method,
+            body: method === 'GET' ? null : JSON.stringify(body),
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        };
 
         return fetch(`${this.baseUrl}${url}${queryString}`, options)
             .then(res => res.json());
