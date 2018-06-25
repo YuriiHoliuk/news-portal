@@ -19,35 +19,36 @@ class Http {
         return this.request(url, 'GET', null, query);
     }
 
-    post(url: string, body: any, query?: { [key: string]: string | number }) {
-        return this.request(url, 'POST', body, query);
+    post(url: string, body?: any, query?: { [key: string]: string | number }) {
+        return this.request(url, 'POST', query, body);
     }
 
-    put(url: string, body: any, query?: { [key: string]: string | number }) {
-        return this.request(url, 'PUT', body, query);
+    put(url: string, body?: any, query?: { [key: string]: string | number }) {
+        return this.request(url, 'PUT', query, body);
     }
 
-    patch(url: string, body: any, query?: { [key: string]: string | number }) {
-        return this.request(url, 'PATCH', body, query);
+    patch(url: string, body?: any, query?: { [key: string]: string | number }) {
+        return this.request(url, 'PATCH', query, body);
     }
 
-    delete(url: string, body: any, query?: { [key: string]: string | number }) {
-        return this.request(url, 'DELETE', body, query);
+    delete(url: string, body?: any, query?: { [key: string]: string | number }) {
+        return this.request(url, 'DELETE', query, body);
     }
 
-    private request(url: string, method: HttpMethod, body: any, query?: { [key: string]: string | number }) {
+    private request(url: string, method: HttpMethod, query?: { [key: string]: string | number }, body?: any) {
         const queryString = Http.transformQuery(query);
-        const options =  {
+        let options: any = {
             method,
-            body: method === 'GET' ? null : JSON.stringify(body),
             headers: {
                 'Content-Type': 'application/json',
             },
         };
+
+        options = body ? { ...options, body: JSON.stringify(body) } : options;
 
         return fetch(`${this.baseUrl}${url}${queryString}`, options)
             .then(res => res.json());
     }
 }
 
-export const http = new Http(API.baseURL);
+export const http = new Http(API.baseURL_DEV);

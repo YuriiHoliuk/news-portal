@@ -9,10 +9,12 @@ import {
     ADD_COMMENT,
     LOADING_ARTICLES_ERROR,
     LOADING_ARTICLES_SUCCESS,
-    REMOVE_ARTICLE,
+    REMOVE_ARTICLE_ERROR,
+    REMOVE_ARTICLE_SUCCESS,
     REMOVE_COMMENT,
     START_ADD_ARTICLE,
     START_LOAD_ARTICLES,
+    START_REMOVE_ARTICLE,
 } from '../actionTypes';
 import { API } from '../../api';
 
@@ -77,16 +79,39 @@ export const addArticle = (newArticle: Partial<IArticle>) => dispatch => {
         );
 }
 
-export function removeArticle(articleId: number) {
+export const removeArticle = (articleId: string) => dispatch => {
+
+    dispatch(startRemoveArticle(articleId));
+
+    return http.delete(`${API.articles}/${articleId}`)
+        .then(
+            (article: IArticle) => dispatch(removeArticleSuccess(article)),
+            error => dispatch(removeArticleError(error)),
+        );
+}
+
+export function startRemoveArticle(articleId: string) {
     return {
-        type: REMOVE_ARTICLE,
-        payload: {
-            articleId,
-        },
+        type: START_REMOVE_ARTICLE,
+        payload: articleId,
     };
 }
 
-export function addComment(articleId: number, text: string) {
+export function removeArticleError(error: any) {
+    return {
+        type: REMOVE_ARTICLE_ERROR,
+        payload: error,
+    };
+}
+
+export function removeArticleSuccess(article: IArticle) {
+    return {
+        type: REMOVE_ARTICLE_SUCCESS,
+        payload: article,
+    };
+}
+
+export function addComment(articleId: string, text: string) {
     return {
         type: ADD_COMMENT,
         payload: {
@@ -96,7 +121,7 @@ export function addComment(articleId: number, text: string) {
     };
 }
 
-export function removeComment(articleId: number, commentId: string) {
+export function removeComment(articleId: string, commentId: string) {
     return {
         type: REMOVE_COMMENT,
         payload: {
@@ -114,6 +139,9 @@ const initialState = fromJS({
 
     addingArticle: false,
     errorAddArticle: null,
+
+    removingArticleId: null,
+    errorRemoveArticle: null,
 });
 
 const actionHandlers = {
@@ -147,10 +175,18 @@ const actionHandlers = {
 
             return hasArticles ? list.push(newArticle) : List([newArticle]);
         }),
-    [REMOVE_ARTICLE]: (state, { payload: { articleId } }) => state.update(
-        'articlesList',
-        list => list.filter(article => article.get('id') !== articleId),
-    ),
+    [START_REMOVE_ARTICLE]: (state, { payload }) => state.set('removingArticleId', payload),
+    [REMOVE_ARTICLE_ERROR]: (state, { payload }) => state.merge({
+        removingArticleId: null,
+        errorRemoveArticle: payload,
+    }),
+    [REMOVE_ARTICLE_SUCCESS]: (state, { payload: { id } }) => state
+        .set('removingArticleId', null)
+        .set('errorRemoveArticle', null)
+        .update(
+            'articlesList',
+            list => list.filter(article => article.get('id') !== id),
+        ),
     [ADD_COMMENT]: (state, { payload: { text, articleId } }) => state.update(
         'articlesList',
         list => list.map(article => article.get('id') === articleId
