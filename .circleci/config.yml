@@ -1,5 +1,3 @@
-# wdwd
-
 version: 2
 jobs:
   build-job:
@@ -56,7 +54,6 @@ workflows:
   version: 2
 
   build-deploy:
-    version: 2
     jobs:
       - build-job
       - deploy-job:
