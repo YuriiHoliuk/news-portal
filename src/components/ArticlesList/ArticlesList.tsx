@@ -6,9 +6,9 @@ import Article from '../Article';
 interface IArticlesListProps {
     articles: List<Map<string, any>>;
     loadArticles: () => any;
-    removeArticle: (articleId: number) => any;
-    removeComment: (articleId: number, commentId: string) => any;
-    addComment: (articleId: number, text: string) => any;
+    removeArticle: (articleId: string) => any;
+    removeComment: (commentId: string) => any;
+    addComment: (articleId: string, text: string) => any;
 }
 
 export default class ArticlesList extends Component<IArticlesListProps, any> {
@@ -27,7 +27,7 @@ export default class ArticlesList extends Component<IArticlesListProps, any> {
 
                             return (
                                 <Article
-                                    removeComment={removeComment.bind(null, id)}
+                                    removeComment={removeComment}
                                     addComment={addComment.bind(null, id)}
                                     remove={removeArticle.bind(null, id)}
                                     key={id}

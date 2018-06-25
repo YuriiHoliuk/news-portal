@@ -36,7 +36,8 @@ class Http {
     }
 
     private request(url: string, method: HttpMethod, query?: { [key: string]: string | number }, body?: any) {
-        const queryString = Http.transformQuery(query);
+        const queryString = query ? Http.transformQuery(query) : '';
+
         let options: any = {
             method,
             headers: {

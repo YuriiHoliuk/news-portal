@@ -1,20 +1,24 @@
-import { fromJS, List, Map } from 'immutable';
+import { fromJS, List } from 'immutable';
 
 import { createReducer, http } from '../../utils';
-import { IArticle } from '../../interfaces';
+import { IArticle, IComment } from '../../interfaces';
 
 import {
     ADD_ARTICLE_ERROR,
     ADD_ARTICLE_SUCCESS,
-    ADD_COMMENT,
+    ADD_COMMENT_ERROR,
+    ADD_COMMENT_SUCCESS,
     LOADING_ARTICLES_ERROR,
     LOADING_ARTICLES_SUCCESS,
     REMOVE_ARTICLE_ERROR,
     REMOVE_ARTICLE_SUCCESS,
-    REMOVE_COMMENT,
+    REMOVE_COMMENT_ERROR,
+    REMOVE_COMMENT_SUCCESS,
     START_ADD_ARTICLE,
+    START_ADD_COMMENT,
     START_LOAD_ARTICLES,
     START_REMOVE_ARTICLE,
+    START_REMOVE_COMMENT,
 } from '../actionTypes';
 import { API } from '../../api';
 
@@ -77,7 +81,7 @@ export const addArticle = (newArticle: Partial<IArticle>) => dispatch => {
             (addedArticle: IArticle) => dispatch(addArticleSuccess(addedArticle)),
             error => dispatch(addArticleError(error)),
         );
-}
+};
 
 export const removeArticle = (articleId: string) => dispatch => {
 
@@ -88,7 +92,7 @@ export const removeArticle = (articleId: string) => dispatch => {
             (article: IArticle) => dispatch(removeArticleSuccess(article)),
             error => dispatch(removeArticleError(error)),
         );
-}
+};
 
 export function startRemoveArticle(articleId: string) {
     return {
@@ -111,25 +115,69 @@ export function removeArticleSuccess(article: IArticle) {
     };
 }
 
-export function addComment(articleId: string, text: string) {
+export function startAddComment(articleId: string, text: string) {
     return {
-        type: ADD_COMMENT,
-        payload: {
-            articleId,
-            text,
-        },
+        type: START_ADD_COMMENT,
+        payload: { articleId, text },
     };
 }
 
-export function removeComment(articleId: string, commentId: string) {
+export function addCommentSuccess(comment: IComment) {
     return {
-        type: REMOVE_COMMENT,
-        payload: {
-            articleId,
-            commentId,
-        },
+        type: ADD_COMMENT_SUCCESS,
+        payload: comment,
     };
 }
+
+export function addCommentError(error: any) {
+    return {
+        type: ADD_COMMENT_ERROR,
+        payload: error,
+    };
+}
+
+export const addComment = (articleId: string, text: string) => dispatch => {
+
+    dispatch(startAddComment(articleId, text));
+
+    return http.post(API.comments, { text }, { articleId })
+        .then(
+            (comment: IComment) => dispatch(addCommentSuccess(comment)),
+            error => dispatch(addCommentError(error)),
+        );
+};
+
+export function startRemoveComment(commentId: string) {
+    return {
+        type: START_REMOVE_COMMENT,
+        payload: commentId,
+    };
+}
+
+export function removeCommentSuccess(comment: IComment) {
+    return {
+        type: REMOVE_COMMENT_SUCCESS,
+        payload: comment,
+    };
+}
+
+export function removeCommentError(error: any) {
+    return {
+        type: REMOVE_COMMENT_ERROR,
+        payload: error,
+    };
+}
+
+export const removeComment = (commentId: string) => dispatch => {
+
+    dispatch(startRemoveComment(commentId));
+
+    http.delete(`${API.comments}/${commentId}`)
+        .then(
+            (comment: IComment) => dispatch(removeCommentSuccess(comment)),
+            error => dispatch(removeCommentError(error)),
+        );
+};
 
 // Reducer
 const initialState = fromJS({
@@ -142,44 +190,37 @@ const initialState = fromJS({
 
     removingArticleId: null,
     errorRemoveArticle: null,
+
+    addingCommentArticleId: null,
+    errorAddComment: null,
+
+    removingCommentId: null,
+    errorRemoveComment: null,
 });
 
 const actionHandlers = {
     [START_LOAD_ARTICLES]: state => state.set('loadingArticles', true),
-    [LOADING_ARTICLES_ERROR]: (state, { payload }) => state.merge({
-        errorLoadingArticles: payload,
-        loadArticles: false,
-    }),
     [LOADING_ARTICLES_SUCCESS]: (state, { payload }) => state.merge({
         articlesList: fromJS(payload),
         errorLoadingArticles: null,
         loadArticles: false,
     }),
+    [LOADING_ARTICLES_ERROR]: (state, { payload }) => state.merge({
+        errorLoadingArticles: payload,
+        loadArticles: false,
+    }),
     [START_ADD_ARTICLE]: state => state.set('addingArticle', true),
+    [ADD_ARTICLE_SUCCESS]: (state, { payload }) => state
+        .set('addingArticle', false)
+        .set('errorAddArticle', null)
+        .update('articlesList', list => (!!list && !!list.size)
+            ? list.push(fromJS(payload))
+            : List([fromJS(payload)])),
     [ADD_ARTICLE_ERROR]: (state, { payload }) => state.merge({
         addingArticle: false,
         errorAddArticle: payload,
     }),
-    [ADD_ARTICLE_SUCCESS]: (state, { payload }) => state
-        .set('addingArticle', false)
-        .set('errorAddArticle', null)
-        .update('articlesList', list => {
-            const hasArticles = !!list && !!list.size;
-            const id = hasArticles ? list.last().get('id') + 1 : 1;
-            const newArticle = Map({
-                ...payload,
-                id,
-                date: Date.now(),
-                comments: null,
-            });
-
-            return hasArticles ? list.push(newArticle) : List([newArticle]);
-        }),
     [START_REMOVE_ARTICLE]: (state, { payload }) => state.set('removingArticleId', payload),
-    [REMOVE_ARTICLE_ERROR]: (state, { payload }) => state.merge({
-        removingArticleId: null,
-        errorRemoveArticle: payload,
-    }),
     [REMOVE_ARTICLE_SUCCESS]: (state, { payload: { id } }) => state
         .set('removingArticleId', null)
         .set('errorRemoveArticle', null)
@@ -187,24 +228,42 @@ const actionHandlers = {
             'articlesList',
             list => list.filter(article => article.get('id') !== id),
         ),
-    [ADD_COMMENT]: (state, { payload: { text, articleId } }) => state.update(
-        'articlesList',
-        list => list.map(article => article.get('id') === articleId
-            ? article.update('comments', comments => {
-                const hasComments = !!comments && !!comments.size;
-                const id = hasComments ? comments.last().get('id') + 1 : 1;
-                const newComment = Map({ text, id });
-
-                return hasComments ? comments.push(newComment) : List([newComment]);
-            })
-            : article),
-    ),
-    [REMOVE_COMMENT]: (state, { payload: { articleId, commentId } }) => state.update(
-        'articlesList',
-        list => list.map(article => article.get('id') === articleId
-            ? article.update('comments', comments => comments.filter(comment => comment.get('id') !== commentId))
-            : article),
-    ),
+    [REMOVE_ARTICLE_ERROR]: (state, { payload }) => state.merge({
+        removingArticleId: null,
+        errorRemoveArticle: payload,
+    }),
+    [START_ADD_COMMENT]: (state, { payload: { articleId } }) => state.set('addingCommentArticleId', articleId),
+    [ADD_COMMENT_SUCCESS]: (state, { payload }) => {
+        return state
+            .set('addingCommentArticleId', null)
+            .set('errorRemoveComment', null)
+            .update(
+                'articlesList',
+                list => list.map(savedArticle => savedArticle.get('id') === payload.article
+                    ? savedArticle.update('comments', comments => comments.push(fromJS(payload)))
+                    : savedArticle),
+            );
+    },
+    [ADD_COMMENT_ERROR]: (state, { payload }) => state.merge({
+        addingCommentArticleId: null,
+        errorRemoveComment: payload,
+    }),
+    [START_REMOVE_COMMENT]: (state, { payload }) => state.set('removingCommentId', payload),
+    [REMOVE_COMMENT_SUCCESS]: (state, { payload: { id, article } }) => {
+        return state
+            .set('removingCommentId', null)
+            .set('errorRemoveComment', null)
+            .update(
+                'articlesList',
+                list => list.map(savedArticle => savedArticle.get('id') === article
+                    ? savedArticle.update('comments', comments => comments.filter(comment => comment.get('id') !== id))
+                    : savedArticle),
+            );
+    },
+    [REMOVE_COMMENT_ERROR]: (state, { payload }) => state.merge({
+        removingCommentId: null,
+        errorRemoveComment: payload,
+    }),
 };
 
 export const articlesReducer = createReducer(actionHandlers, initialState);
