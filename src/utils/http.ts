@@ -39,7 +39,10 @@ class Http {
         const queryString = query ? Http.transformQuery(query) : '';
 
         const headers = new Headers();
-        headers.append('Content-Type', 'application/json');
+
+        if (method !== 'GET') {
+            headers.append('Content-Type', 'application/json');
+        }
 
         let options: any = {
             method,
