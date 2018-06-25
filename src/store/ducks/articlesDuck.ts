@@ -1,6 +1,6 @@
 import { fromJS, List, Map } from 'immutable';
 
-import { createReducer } from '../../utils';
+import { createReducer, http } from '../../utils';
 import { IArticle } from '../../interfaces';
 
 import {
@@ -12,6 +12,7 @@ import {
     REMOVE_COMMENT,
     START_LOAD_ARTICLES,
 } from '../actionTypes';
+import { API } from '../../api';
 
 // Action creators
 export function startLoadArticles() {
@@ -36,8 +37,7 @@ export const loadArticles = () => dispatch => {
 
     dispatch(startLoadArticles());
 
-    return fetch('https://react-express-news-portal.herokuapp.com/articles')
-        .then(response => response.json())
+    return http.get(API.articles)
         .then(
             (articlesList: IArticle[]) => dispatch(loadingArticlesSuccess(articlesList)),
             error => dispatch(loadingArticlesError(error)),
