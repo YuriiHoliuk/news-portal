@@ -31,7 +31,7 @@ jobs:
 
       # run build!
       - run: yarn build:prod
-      - run: ./node_modules/.bin/firebase deploy --token=$FIREBASE_DEPLOY_TOKEN
+      - run: yarn deploy:ci
 
 workflows:
   version: 2
