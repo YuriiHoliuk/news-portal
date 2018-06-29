@@ -1,7 +1,7 @@
 import { fromJS, List } from 'immutable';
 
 import { createReducer, http } from '../../utils';
-import { IArticle, IComment } from '../../interfaces';
+import { IArticle, IArticlesResponse, IComment } from '../../interfaces';
 
 import {
     ADD_ARTICLE_ERROR,
@@ -20,7 +20,7 @@ import {
     START_REMOVE_ARTICLE,
     START_REMOVE_COMMENT,
 } from '../actionTypes';
-import { API } from '../../api';
+import { env } from '../../../environment/environment';
 
 // Action creators
 export function startLoadArticles() {
@@ -34,10 +34,10 @@ export function loadingArticlesError(error: any) {
     };
 }
 
-export function loadingArticlesSuccess(articlesList: IArticle[]) {
+export function loadingArticlesSuccess(response: IArticlesResponse) {
     return {
         type: LOADING_ARTICLES_SUCCESS,
-        payload: articlesList,
+        payload: response,
     };
 }
 
@@ -45,9 +45,9 @@ export const loadArticles = () => dispatch => {
 
     dispatch(startLoadArticles());
 
-    return http.get(API.articles)
+    return http.get(env.api.articles.get)
         .then(
-            (articlesList: IArticle[]) => dispatch(loadingArticlesSuccess(articlesList)),
+            (response: IArticlesResponse) => dispatch(loadingArticlesSuccess(response)),
             error => dispatch(loadingArticlesError(error)),
         );
 };
@@ -76,7 +76,7 @@ export function addArticleSuccess(article: IArticle) {
 export const addArticle = (newArticle: Partial<IArticle>) => dispatch => {
     dispatch(startAddArticle(newArticle));
 
-    return http.post(API.articles, newArticle)
+    return http.post(env.api.articles.add, newArticle)
         .then(
             (addedArticle: IArticle) => dispatch(addArticleSuccess(addedArticle)),
             error => dispatch(addArticleError(error)),
@@ -87,7 +87,7 @@ export const removeArticle = (articleId: string) => dispatch => {
 
     dispatch(startRemoveArticle(articleId));
 
-    return http.delete(`${API.articles}/${articleId}`)
+    return http.delete(`${env.api.articles.remove}/${articleId}`)
         .then(
             (article: IArticle) => dispatch(removeArticleSuccess(article)),
             error => dispatch(removeArticleError(error)),
@@ -136,11 +136,11 @@ export function addCommentError(error: any) {
     };
 }
 
-export const addComment = (articleId: string, text: string) => dispatch => {
+export const addComment = (article_id: string, text: string) => dispatch => {
 
-    dispatch(startAddComment(articleId, text));
+    dispatch(startAddComment(article_id, text));
 
-    return http.post(API.comments, { text }, { articleId })
+    return http.post(env.api.comments.add, { text, article_id })
         .then(
             (comment: IComment) => dispatch(addCommentSuccess(comment)),
             error => dispatch(addCommentError(error)),
@@ -172,7 +172,7 @@ export const removeComment = (commentId: string) => dispatch => {
 
     dispatch(startRemoveComment(commentId));
 
-    http.delete(`${API.comments}/${commentId}`)
+    http.delete(`${env.api.comments.remove}/${commentId}`)
         .then(
             (comment: IComment) => dispatch(removeCommentSuccess(comment)),
             error => dispatch(removeCommentError(error)),
@@ -201,7 +201,7 @@ const initialState = fromJS({
 const actionHandlers = {
     [START_LOAD_ARTICLES]: state => state.set('loadingArticles', true),
     [LOADING_ARTICLES_SUCCESS]: (state, { payload }) => state.merge({
-        articlesList: fromJS(payload),
+        articlesList: fromJS(payload.items),
         errorLoadingArticles: null,
         loadArticles: false,
     }),
@@ -221,12 +221,12 @@ const actionHandlers = {
         errorAddArticle: payload,
     }),
     [START_REMOVE_ARTICLE]: (state, { payload }) => state.set('removingArticleId', payload),
-    [REMOVE_ARTICLE_SUCCESS]: (state, { payload: { id } }) => state
+    [REMOVE_ARTICLE_SUCCESS]: (state, { payload: { _id } }) => state
         .set('removingArticleId', null)
         .set('errorRemoveArticle', null)
         .update(
             'articlesList',
-            list => list.filter(article => article.get('id') !== id),
+            list => list.filter(article => article.get('_id') !== _id),
         ),
     [REMOVE_ARTICLE_ERROR]: (state, { payload }) => state.merge({
         removingArticleId: null,
@@ -239,7 +239,7 @@ const actionHandlers = {
             .set('errorRemoveComment', null)
             .update(
                 'articlesList',
-                list => list.map(savedArticle => savedArticle.get('id') === payload.article
+                list => list.map(savedArticle => savedArticle.get('_id') === payload.article
                     ? savedArticle.update('comments', comments => comments.push(fromJS(payload)))
                     : savedArticle),
             );
@@ -249,14 +249,17 @@ const actionHandlers = {
         errorRemoveComment: payload,
     }),
     [START_REMOVE_COMMENT]: (state, { payload }) => state.set('removingCommentId', payload),
-    [REMOVE_COMMENT_SUCCESS]: (state, { payload: { id, article } }) => {
+    [REMOVE_COMMENT_SUCCESS]: (state, { payload: { _id, article } }) => {
         return state
             .set('removingCommentId', null)
             .set('errorRemoveComment', null)
             .update(
                 'articlesList',
-                list => list.map(savedArticle => savedArticle.get('id') === article
-                    ? savedArticle.update('comments', comments => comments.filter(comment => comment.get('id') !== id))
+                list => list.map(savedArticle => savedArticle.get('_id') === article
+                    ? savedArticle.update(
+                        'comments',
+                        comments => comments.filter(comment => comment.get('_id') !== _id),
+                    )
                     : savedArticle),
             );
     },

@@ -17,3 +17,12 @@ export const REMOVE_COMMENT_ERROR = 'REMOVE COMMENT ERROR';
 export const START_ADD_COMMENT = 'START ADD COMMENT';
 export const ADD_COMMENT_SUCCESS = 'ADD COMMENT SUCCESS';
 export const ADD_COMMENT_ERROR = 'ADD COMMENT ERROR';
+
+export const START = ' START';
+export const SUCCESS = ' SUCCESS';
+export const ERROR = ' ERROR';
+
+export const SIGN_IN = 'SIGN IN';
+export const SIGN_UP = 'SIGN UP';
+export const SIGN_OUT = 'SIGN OUT';
+export const GET_ACCOUNT = 'GET ACCOUNT';
