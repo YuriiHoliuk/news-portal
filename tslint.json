@@ -7,7 +7,6 @@
     "arrow-parens": [false],
     "object-literal-sort-keys": false,
     "jsx-no-multiline-js": false,
-    "no-object-literal-type-assertion": false,
-    "variable-name": false
+    "no-object-literal-type-assertion": false
   }
 }

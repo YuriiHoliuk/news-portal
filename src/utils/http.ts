@@ -1,7 +1,5 @@
 import { HttpMethod } from '../../types/declaration';
-import { signOut } from '../store/ducks';
-import store from '../store';
-import { env } from '../../environment/environment';
+import { API } from '../api';
 
 class Http {
 
@@ -14,13 +12,7 @@ class Http {
         return queryString ? `?${queryString}` : '';
     }
 
-    token: string = localStorage.getItem('token');
-
     constructor(public baseUrl = '') {
-    }
-
-    setAuthToken(token: string) {
-        this.token = token;
     }
 
     get(url: string, query?: { [key: string]: string | number }) {
@@ -52,10 +44,6 @@ class Http {
             headers.append('Content-Type', 'application/json');
         }
 
-        if (this.token) {
-            headers.append('Authorization', `Bearer ${this.token}`);
-        }
-
         let options: any = {
             method,
             mode: 'cors',
@@ -65,19 +53,8 @@ class Http {
         options = body ? { ...options, body: JSON.stringify(body) } : options;
 
         return fetch(`${this.baseUrl}${url}${queryString}`, options)
-            .then(res => {
-                if (!res.ok) {
-                    if (res.status === 401) {
-                        store.dispatch(signOut() as any);
-                    }
-
-                    throw new Error(res.statusText);
-                }
-
-                return res;
-            })
             .then(res => res.json());
     }
 }
 
-export const http = new Http(env.api.baseURL);
+export const http = new Http(API.baseURL);

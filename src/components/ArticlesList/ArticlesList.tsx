@@ -34,7 +34,7 @@ export default class ArticlesList extends Component<IArticlesListProps, any> {
             <div className='uk-margin-xlarge-bottom'>
                 {articles && articles
                     .map(article => {
-                            const id = article.get('_id');
+                            const id = article.get('id');
 
                             return (
                                 <Article

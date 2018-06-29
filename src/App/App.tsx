@@ -1,62 +1,32 @@
 import React, { Component } from 'react';
 
-import { If } from '../utils';
-
 import ArticlesList from '../components/ArticlesList';
 import AppContext from './AppContext';
 
-import AppHeader from '../components/AppHeader';
 import AddArticleForm from '../components/AddArticleForm';
-import SignInForm from '../components/SignInForm';
-import SignUpForm from '../components/SignUpForm';
+import AppHeader from '../components/AppHeader';
 
-export interface IAppProps {
-    isLoggedIn: boolean;
-    account: Map<string, string>;
-    signOut: () => any;
-    getAccount: () => any;
-    token: string;
+export interface IAppState {
+    proMode: boolean;
 }
 
-export default class App extends Component<IAppProps, {}> {
+export default class App extends Component<{}, IAppState> {
 
-    componentDidMount() {
-        const { isLoggedIn, getAccount, token } = this.props;
+    state = {
+        proMode: false,
+    };
 
-        if (!isLoggedIn && token) {
-            getAccount();
-        }
-    }
+    toggleProMode = () => this.setState((prevState: IAppState) => ({ proMode: !prevState.proMode }));
 
     render() {
-        const { isLoggedIn, account, signOut } = this.props;
+        const { proMode } = this.state;
 
         return (
             <div className='uk-padding'>
-                <AppContext.Provider value={{ proMode: isLoggedIn }}>
-                    <AppHeader
-                        signOut={signOut}
-                        name={account && account.get('name')}
-                        isLoggedIn={isLoggedIn}
-                        title={'News Portal'}
-                    />
-
-                    <If condition={!isLoggedIn}>
-                        <div className='uk-flex uk-margin-large-bottom'>
-                            <div className='uk-margin-large-right'>
-                                <SignInForm/>
-                            </div>
-                            <div className='uk-margin-large-left'>
-                                <SignUpForm/>
-                            </div>
-                        </div>
-                    </If>
-
+                <AppContext.Provider value={{ proMode, toggleProMode: this.toggleProMode }}>
+                    <AppHeader title={'News Portal'}/>
                     <ArticlesList/>
-
-                    <If condition={isLoggedIn}>
-                        <AddArticleForm/>
-                    </If>
+                    <AddArticleForm/>
                 </AppContext.Provider>
             </div>
         );
