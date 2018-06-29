@@ -5,6 +5,7 @@ import { If } from '../../utils';
 
 import Comment from '../Comment';
 import AddCommentForm from '../AddCommentForm';
+import AppContext from '../../App/AppContext';
 
 export interface ICommentsListProps {
     comments: List<Map<string, any>>;
@@ -48,7 +49,7 @@ export default class CommentsList extends Component<ICommentsListProps, any> {
                         <If condition={isOpened}>
                             <ul>
                                 {comments.map(comment => {
-                                    const id = comment.get('id');
+                                    const id = comment.get('_id');
                                     const text = comment.get('text');
 
                                     return (
@@ -65,9 +66,13 @@ export default class CommentsList extends Component<ICommentsListProps, any> {
                     </Fragment>
                 )}
 
-                <If condition={isOpened || (!comments || (comments && !comments.size))}>
-                    <AddCommentForm loading={addingComment} addComment={this.addComment}/>
-                </If>
+                <AppContext.Consumer>
+                    {({ proMode }) => proMode && (
+                        <If condition={isOpened || (!comments || (comments && !comments.size))}>
+                            <AddCommentForm loading={addingComment} addComment={this.addComment}/>
+                        </If>
+                    )}
+                </AppContext.Consumer>
             </div>
         );
     }
