@@ -1,6 +1,7 @@
 import { fromJS } from 'immutable';
 
 import { createReducer, http } from '../../utils';
+import { API_THUNK, IApiThunkAction } from '../middlewares';
 
 import { IArticle, IArticlesResponse } from '../../interfaces';
 import {
@@ -17,163 +18,79 @@ import {
 import { env } from '../../../environment/environment';
 
 // Action creators
-export function loadArticlesStart() {
-    return { type: LOAD_ARTICLES + START };
-}
-
-export function loadArticlesSuccess(response: IArticlesResponse) {
+export const loadArticles = (): IApiThunkAction => {
     return {
-        type: LOAD_ARTICLES + SUCCESS,
-        payload: response,
+        [API_THUNK]: {
+            request: () => http.get(env.api.articles.get),
+            onStart: [LOAD_ARTICLES + START],
+            onSuccess: [LOAD_ARTICLES + SUCCESS],
+            onError: [LOAD_ARTICLES + ERROR],
+        },
     };
-}
-
-export function loadArticlesError(error: any) {
-    return {
-        type: LOAD_ARTICLES + ERROR,
-        payload: error,
-    };
-}
-
-export const loadArticles = () => dispatch => {
-
-    dispatch(loadArticlesStart());
-
-    return http.get(env.api.articles.get)
-        .then(
-            (response: IArticlesResponse) => dispatch(loadArticlesSuccess(response)),
-            error => dispatch(loadArticlesError(error.message)),
-        );
 };
 
-export function addArticleStart() {
-    return { type: ADD_ARTICLE + START };
-}
-
-export function addArticleSuccess() {
-    return { type: ADD_ARTICLE + SUCCESS };
-}
-
-export function addArticleError(error: any) {
-    return {
-        type: ADD_ARTICLE + ERROR,
-        payload: error,
-    };
-}
-
-export const addArticle = ({ title, text, image }: Partial<IArticle>) => dispatch => {
-    dispatch(addArticleStart());
-
+export const addArticle = ({ title, text, image }: Partial<IArticle>): IApiThunkAction => {
     let newArticle: Partial<IArticle> = { title, text };
 
     if (image) {
         newArticle = { ...newArticle, image };
     }
 
-    return http.post(env.api.articles.add, newArticle)
-        .then(
-            () => {
-                dispatch(loadArticles());
-                dispatch(addArticleSuccess());
-            },
-            error => dispatch(addArticleError(error.message)),
-        );
+    return {
+        [API_THUNK]: {
+            request: () => http.post(env.api.articles.add, newArticle),
+            onStart: [ADD_ARTICLE + START],
+            onSuccess: [ADD_ARTICLE + SUCCESS, loadArticles],
+            onError: [ADD_ARTICLE + ERROR],
+        },
+    };
 };
 
-export function removeArticleStart(articleId: string) {
-    return {
-        type: REMOVE_ARTICLE + START,
-        payload: articleId,
-    };
-}
-
-export function removeArticleSuccess(slug: string) {
+export const removeArticleSuccess = (slug: string) => () => {
     return {
         type: REMOVE_ARTICLE + SUCCESS,
         payload: slug,
     };
-}
-
-export function removeArticleError(error: any) {
-    return {
-        type: REMOVE_ARTICLE + ERROR,
-        payload: error,
-    };
-}
-
-export const removeArticle = (slug: string) => dispatch => {
-
-    dispatch(removeArticleStart(slug));
-
-    return http.delete(`${env.api.articles.remove}/${slug}`)
-        .then(
-            () => dispatch(removeArticleSuccess(slug)),
-            error => dispatch(removeArticleError(error.message)),
-        );
 };
 
-export function addCommentStart(articleId: string) {
+export const removeArticle = (slug: string): IApiThunkAction => {
     return {
-        type: ADD_COMMENT + START,
-        payload: articleId,
+        [API_THUNK]: {
+            request: () => http.delete(`${env.api.articles.remove}/${slug}`),
+            onStart: [REMOVE_ARTICLE + START],
+            onSuccess: [removeArticleSuccess(slug)],
+            onError: [REMOVE_ARTICLE + ERROR],
+        },
     };
-}
-
-export function addCommentSuccess() {
-    return { type: ADD_COMMENT + SUCCESS };
-}
-
-export function addCommentError(error: any) {
-    return {
-        type: ADD_COMMENT + ERROR,
-        payload: error,
-    };
-}
-
-export const addComment = (article_id: string, comment: string) => dispatch => {
-
-    dispatch(addCommentStart(article_id));
-
-    return http.post(env.api.comments.add, { comment, article_id })
-        .then(
-            () => {
-                dispatch(loadArticles());
-                dispatch(addCommentSuccess());
-            },
-            error => dispatch(addCommentError(error.message)),
-        );
 };
 
-export function removeCommentStart(commentId: string) {
+export const addComment = (article_id: string, comment: string): IApiThunkAction => {
     return {
-        type: REMOVE_COMMENT + START,
-        payload: commentId,
+        [API_THUNK]: {
+            request: () => http.post(env.api.comments.add, { comment, article_id }),
+            onStart: [ADD_COMMENT + START],
+            onSuccess: [ADD_COMMENT + SUCCESS, loadArticles],
+            onError: [ADD_COMMENT + ERROR],
+        },
     };
-}
+};
 
-export function removeCommentSuccess(articleId: string, commentId: string) {
+export const removeCommentSuccess = (articleId: string, commentId: string) => () => {
     return {
         type: REMOVE_COMMENT + SUCCESS,
         payload: { articleId, commentId },
     };
-}
+};
 
-export function removeCommentError(error: any) {
+export const removeComment = (articleId: string, commentId: string): IApiThunkAction => {
     return {
-        type: REMOVE_COMMENT + ERROR,
-        payload: error,
+        [API_THUNK]: {
+            request: () => http.delete(`${env.api.comments.remove}/${commentId}`),
+            onStart: [REMOVE_COMMENT + START],
+            onSuccess: [removeCommentSuccess(articleId, commentId)],
+            onError: [REMOVE_COMMENT + ERROR],
+        },
     };
-}
-
-export const removeComment = (articleId: string, commentId: string) => dispatch => {
-
-    dispatch(removeCommentStart(commentId));
-
-    http.delete(`${env.api.comments.remove}/${commentId}`)
-        .then(
-            () => dispatch(removeCommentSuccess(articleId, commentId)),
-            error => dispatch(removeCommentError(error.message)),
-        );
 };
 
 // Reducer
@@ -193,7 +110,7 @@ const initialState = fromJS({
 
 const actionHandlers = {
     [LOAD_ARTICLES + START]: state => state.set('loadingArticles', true),
-    [LOAD_ARTICLES + SUCCESS]: (state, { payload }) => state.merge({
+    [LOAD_ARTICLES + SUCCESS]: (state, { payload }: { payload: IArticlesResponse }) => state.merge({
         loadingArticles: false,
         error: null,
         articlesList: fromJS(payload.items),

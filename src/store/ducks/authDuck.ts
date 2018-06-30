@@ -7,104 +7,52 @@ import { ERROR, GET_ACCOUNT, SIGN_IN, SIGN_OUT, SIGN_UP, START, SUCCESS } from '
 import { IAuthResponse, ISignInRequest, ISignUpRequest, IUserData } from '../../interfaces';
 
 import { env } from '../../../environment/environment';
+import { API_THUNK, IApiThunkAction } from '../middlewares';
 
 // Action creators
-export function signInStart() {
+export const signIn = (data: ISignInRequest): IApiThunkAction => {
     return {
-        type: SIGN_IN + START,
+        [API_THUNK]: {
+            request: () => http.post(env.api.auth.signIn, data)
+                .then((response: IAuthResponse) => {
+                    localStorage.setItem('token', response.token);
+                    http.setAuthToken(response.token);
+
+                    return response;
+                }),
+            onStart: [SIGN_IN + START],
+            onSuccess: [SIGN_IN + SUCCESS],
+            onError: [SIGN_IN + ERROR],
+        },
     };
-}
-
-export function signInSuccess(response: IAuthResponse) {
-    return {
-        type: SIGN_IN + SUCCESS,
-        payload: response,
-    };
-}
-
-export function signInError(error: any) {
-    return {
-        type: SIGN_IN + ERROR,
-        payload: error,
-    };
-}
-
-export const signIn = (data: ISignInRequest) => dispatch => {
-    dispatch(signInStart());
-
-    return http.post(env.api.auth.signIn, data)
-        .then(
-            (response: IAuthResponse) => {
-                localStorage.setItem('token', response.token);
-                http.setAuthToken(response.token);
-                dispatch(signInSuccess(response));
-            },
-            error => dispatch(signInError(error)),
-        );
 };
 
-export function signUpStart() {
+export const signUp = (data: ISignUpRequest): IApiThunkAction => {
     return {
-        type: SIGN_UP + START,
+        [API_THUNK]: {
+            request: () => http.post(env.api.auth.signUp, data)
+                .then((response: IAuthResponse) => {
+                    http.setAuthToken(response.token);
+                    localStorage.setItem('token', response.token);
+
+                    return response;
+                }),
+            onStart: [SIGN_UP + START],
+            onSuccess: [SIGN_UP + SUCCESS],
+            onError: [SIGN_UP + ERROR],
+        },
     };
-}
-
-export function signUpSuccess(response: IAuthResponse) {
-    return {
-        type: SIGN_UP + SUCCESS,
-        payload: response,
-    };
-}
-
-export function signUpError(error: any) {
-    return {
-        type: SIGN_UP + ERROR,
-        payload: error,
-    };
-}
-
-export const signUp = (data: ISignUpRequest) => dispatch => {
-    dispatch(signUpStart());
-
-    return http.post(env.api.auth.signUp, data)
-        .then(
-            (response: IAuthResponse) => {
-                dispatch(signUpSuccess(response));
-                http.setAuthToken(response.token);
-                localStorage.setItem('token', response.token);
-            },
-            error => dispatch(signUpError(error)),
-        );
 };
 
-export function getAccountStart() {
+export const getAccount = (): IApiThunkAction => {
     return {
-        type: GET_ACCOUNT + START,
+        [API_THUNK]: {
+            request: () => http.get(env.api.user.details),
+            onStart: [GET_ACCOUNT + START],
+            onSuccess: [GET_ACCOUNT + SUCCESS],
+            onError: [GET_ACCOUNT + ERROR],
+        },
     };
-}
-
-export function getAccountSuccess(response: IUserData) {
-    return {
-        type: GET_ACCOUNT + SUCCESS,
-        payload: response,
-    };
-}
-
-export function getAccountError(error: any) {
-    return {
-        type: GET_ACCOUNT + ERROR,
-        payload: error,
-    };
-}
-
-export const getAccount = () => dispatch => {
-    dispatch(getAccountStart());
-
-    return http.get(env.api.user.details)
-        .then(
-            (response: IUserData) => dispatch(getAccountSuccess(response)),
-            error => dispatch(getAccountError(error)),
-        );
 };
 
 export const signOut = () => dispatch => {
@@ -153,7 +101,7 @@ const actionHandlers = {
         token: null,
         account: null,
     }),
-    [GET_ACCOUNT + SUCCESS]: (state, { payload }) => state.set('account', fromJS(payload)),
+    [GET_ACCOUNT + SUCCESS]: (state, { payload }: { payload: IUserData }) => state.set('account', fromJS(payload)),
 };
 
 export const authReducer = createReducer(actionHandlers, initialState);
