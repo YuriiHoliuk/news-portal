@@ -65,18 +65,18 @@ class Http {
         options = body ? { ...options, body: JSON.stringify(body) } : options;
 
         return fetch(`${this.baseUrl}${url}${queryString}`, options)
-            .then(res => {
+            .then(res => res.json().catch(() => null).then(data => ({ data, res })))
+            .then(({ res, data }) => {
                 if (!res.ok) {
                     if (res.status === 401) {
                         store.dispatch(signOut() as any);
                     }
 
-                    throw new Error(res.statusText);
+                    throw new Error(data.message);
                 }
 
-                return res;
-            })
-            .then(res => res.json().catch(() => null));
+                return data;
+            });
     }
 }
 

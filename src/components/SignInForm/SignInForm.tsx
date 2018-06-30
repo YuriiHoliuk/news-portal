@@ -1,10 +1,12 @@
 import React, { Component, createRef, RefObject } from 'react';
 import Button from '../Button/Button';
 import { ISignInRequest } from '../../interfaces';
+import { If } from '../../utils';
 
 export interface ISignInFormProps {
     signIn: (data: ISignInRequest) => any;
     loading: boolean;
+    error: string;
 }
 
 export default class SignInForm extends Component<ISignInFormProps, any> {
@@ -28,7 +30,7 @@ export default class SignInForm extends Component<ISignInFormProps, any> {
 
     render() {
         const { email, password } = this.state;
-        const { loading } = this.props;
+        const { loading, error } = this.props;
 
         return (
             <form ref={this.formRef} onSubmit={this.signIn}>
@@ -36,6 +38,10 @@ export default class SignInForm extends Component<ISignInFormProps, any> {
                 <fieldset className='uk-fieldset'>
 
                     <legend className='uk-legend'>Sign In for additional options</legend>
+
+                    <If condition={!!error}>
+                        <p className='uk-alert-danger' uk-alert=''>{error}</p>
+                    </If>
 
                     <input
                         className='uk-input uk-margin'

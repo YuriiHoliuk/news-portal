@@ -1,10 +1,14 @@
 import { fromJS } from 'immutable';
+import { createSelector } from 'reselect';
+
 import { createReducer, http } from '../../utils';
+
 import { ERROR, GET_ACCOUNT, SIGN_IN, SIGN_OUT, SIGN_UP, START, SUCCESS } from '../actionTypes';
 import { IAuthResponse, ISignInRequest, ISignUpRequest, IUserData } from '../../interfaces';
-import { createSelector } from 'reselect';
+
 import { env } from '../../../environment/environment';
 
+// Action creators
 export function signInStart() {
     return {
         type: SIGN_IN + START,
@@ -109,14 +113,15 @@ export const signOut = () => dispatch => {
     dispatch({ type: SIGN_OUT });
 };
 
+// Reducer
 const initialState = fromJS({
     token: localStorage.getItem('token'),
 
     singingIn: false,
-    errorSignIn: null,
+    signInError: null,
 
     singingUp: false,
-    errorSignUp: null,
+    signUpError: null,
 
     account: null,
 });
@@ -125,24 +130,24 @@ const actionHandlers = {
     [SIGN_IN + START]: state => state.set('singingIn', true),
     [SIGN_IN + SUCCESS]: (state, { payload }) => state.merge({
         singingIn: false,
-        errorSignIn: null,
+        signInError: null,
         account: fromJS(payload.account),
         token: payload.token,
     }),
     [SIGN_IN + ERROR]: (state, { payload }) => state.merge({
         singingUp: false,
-        errorSignUp: payload,
+        signUpError: payload,
     }),
     [SIGN_UP + START]: state => state.set('singingUp', true),
     [SIGN_UP + SUCCESS]: (state, { payload }) => state.merge({
         singingUp: false,
-        errorSignUp: null,
+        signUpError: null,
         account: fromJS(payload.account),
         token: payload.token,
     }),
     [SIGN_UP + ERROR]: (state, { payload }) => state.merge({
         singingUp: false,
-        errorSignUp: payload,
+        signUpError: payload,
     }),
     [SIGN_OUT]: state => state.merge({
         token: null,
@@ -153,6 +158,7 @@ const actionHandlers = {
 
 export const authReducer = createReducer(actionHandlers, initialState);
 
+// Selectors
 export const tokenSelector = (state: any) => state.getIn(['auth', 'token']);
 export const accountSelector = (state: any) => state.getIn(['auth', 'account']);
 

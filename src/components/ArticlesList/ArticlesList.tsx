@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { List, Map } from 'immutable';
 
 import Article from '../Article';
+import { If } from '../../utils';
 
 interface IArticlesListProps {
     articles: List<Map<string, any>>;
@@ -12,6 +13,7 @@ interface IArticlesListProps {
     addingCommentArticleId: string;
     removingArticleId: string;
     removingCommentId: string;
+    error: string;
 }
 
 export default class ArticlesList extends Component<IArticlesListProps, any> {
@@ -28,10 +30,16 @@ export default class ArticlesList extends Component<IArticlesListProps, any> {
             addingCommentArticleId,
             removingArticleId,
             removingCommentId,
+            error,
         } = this.props;
 
         return (
             <div className='uk-margin-xlarge-bottom'>
+
+                <If condition={!!error}>
+                    <p className='uk-alert-danger' uk-alert=''>{error}</p>
+                </If>
+
                 {articles && articles
                     .map(article => {
                             const id = article.get('_id');

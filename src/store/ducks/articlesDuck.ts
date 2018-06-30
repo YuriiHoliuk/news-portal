@@ -1,74 +1,68 @@
 import { fromJS } from 'immutable';
 
 import { createReducer, http } from '../../utils';
-import { IArticle, IArticlesResponse } from '../../interfaces';
 
+import { IArticle, IArticlesResponse } from '../../interfaces';
 import {
-    ADD_ARTICLE_ERROR,
-    ADD_ARTICLE_SUCCESS,
-    ADD_COMMENT_ERROR,
-    ADD_COMMENT_SUCCESS,
-    LOADING_ARTICLES_ERROR,
-    LOADING_ARTICLES_SUCCESS,
-    REMOVE_ARTICLE_ERROR,
-    REMOVE_ARTICLE_SUCCESS,
-    REMOVE_COMMENT_ERROR,
-    REMOVE_COMMENT_SUCCESS,
-    START_ADD_ARTICLE,
-    START_ADD_COMMENT,
-    START_LOAD_ARTICLES,
-    START_REMOVE_ARTICLE,
-    START_REMOVE_COMMENT,
+    ADD_ARTICLE,
+    ADD_COMMENT,
+    ERROR,
+    LOAD_ARTICLES,
+    REMOVE_ARTICLE,
+    REMOVE_COMMENT,
+    START,
+    SUCCESS,
 } from '../actionTypes';
+
 import { env } from '../../../environment/environment';
 
 // Action creators
-export function startLoadArticles() {
-    return { type: START_LOAD_ARTICLES };
+export function loadArticlesStart() {
+    return { type: LOAD_ARTICLES + START };
 }
 
-export function loadingArticlesError(error: any) {
+export function loadArticlesSuccess(response: IArticlesResponse) {
     return {
-        type: LOADING_ARTICLES_ERROR,
-        payload: error,
+        type: LOAD_ARTICLES + SUCCESS,
+        payload: response,
     };
 }
 
-export function loadingArticlesSuccess(response: IArticlesResponse) {
+export function loadArticlesError(error: any) {
     return {
-        type: LOADING_ARTICLES_SUCCESS,
-        payload: response,
+        type: LOAD_ARTICLES + ERROR,
+        payload: error,
     };
 }
 
 export const loadArticles = () => dispatch => {
 
-    dispatch(startLoadArticles());
+    dispatch(loadArticlesStart());
 
     return http.get(env.api.articles.get)
         .then(
-            (response: IArticlesResponse) => dispatch(loadingArticlesSuccess(response)),
-            error => dispatch(loadingArticlesError(error)),
+            (response: IArticlesResponse) => dispatch(loadArticlesSuccess(response)),
+            error => dispatch(loadArticlesError(error.message)),
         );
 };
 
-export function startAddArticle() {
-    return { type: START_ADD_ARTICLE };
+export function addArticleStart() {
+    return { type: ADD_ARTICLE + START };
+}
+
+export function addArticleSuccess() {
+    return { type: ADD_ARTICLE + SUCCESS };
 }
 
 export function addArticleError(error: any) {
     return {
-        type: ADD_ARTICLE_ERROR,
+        type: ADD_ARTICLE + ERROR,
         payload: error,
     };
 }
 
-export function addArticleSuccess() {
-    return { type: ADD_ARTICLE_SUCCESS };
-}
-
 export const addArticle = ({ title, text, image }: Partial<IArticle>) => dispatch => {
-    dispatch(startAddArticle());
+    dispatch(addArticleStart());
 
     let newArticle: Partial<IArticle> = { title, text };
 
@@ -82,63 +76,63 @@ export const addArticle = ({ title, text, image }: Partial<IArticle>) => dispatc
                 dispatch(loadArticles());
                 dispatch(addArticleSuccess());
             },
-            error => dispatch(addArticleError(error)),
+            error => dispatch(addArticleError(error.message)),
         );
 };
 
-export const removeArticle = (slug: string) => dispatch => {
-
-    dispatch(startRemoveArticle(slug));
-
-    return http.delete(`${env.api.articles.remove}/${slug}`)
-        .then(
-            () => dispatch(removeArticleSuccess(slug)),
-            error => dispatch(removeArticleError(error)),
-        );
-};
-
-export function startRemoveArticle(articleId: string) {
+export function removeArticleStart(articleId: string) {
     return {
-        type: START_REMOVE_ARTICLE,
+        type: REMOVE_ARTICLE + START,
         payload: articleId,
-    };
-}
-
-export function removeArticleError(error: any) {
-    return {
-        type: REMOVE_ARTICLE_ERROR,
-        payload: error,
     };
 }
 
 export function removeArticleSuccess(slug: string) {
     return {
-        type: REMOVE_ARTICLE_SUCCESS,
+        type: REMOVE_ARTICLE + SUCCESS,
         payload: slug,
     };
 }
 
-export function startAddComment(articleId: string) {
+export function removeArticleError(error: any) {
     return {
-        type: START_ADD_COMMENT,
+        type: REMOVE_ARTICLE + ERROR,
+        payload: error,
+    };
+}
+
+export const removeArticle = (slug: string) => dispatch => {
+
+    dispatch(removeArticleStart(slug));
+
+    return http.delete(`${env.api.articles.remove}/${slug}`)
+        .then(
+            () => dispatch(removeArticleSuccess(slug)),
+            error => dispatch(removeArticleError(error.message)),
+        );
+};
+
+export function addCommentStart(articleId: string) {
+    return {
+        type: ADD_COMMENT + START,
         payload: articleId,
     };
 }
 
 export function addCommentSuccess() {
-    return { type: ADD_COMMENT_SUCCESS };
+    return { type: ADD_COMMENT + SUCCESS };
 }
 
 export function addCommentError(error: any) {
     return {
-        type: ADD_COMMENT_ERROR,
+        type: ADD_COMMENT + ERROR,
         payload: error,
     };
 }
 
 export const addComment = (article_id: string, comment: string) => dispatch => {
 
-    dispatch(startAddComment(article_id));
+    dispatch(addCommentStart(article_id));
 
     return http.post(env.api.comments.add, { comment, article_id })
         .then(
@@ -146,120 +140,112 @@ export const addComment = (article_id: string, comment: string) => dispatch => {
                 dispatch(loadArticles());
                 dispatch(addCommentSuccess());
             },
-            error => dispatch(addCommentError(error)),
+            error => dispatch(addCommentError(error.message)),
         );
 };
 
-export function startRemoveComment(commentId: string) {
+export function removeCommentStart(commentId: string) {
     return {
-        type: START_REMOVE_COMMENT,
+        type: REMOVE_COMMENT + START,
         payload: commentId,
     };
 }
 
 export function removeCommentSuccess(articleId: string, commentId: string) {
     return {
-        type: REMOVE_COMMENT_SUCCESS,
+        type: REMOVE_COMMENT + SUCCESS,
         payload: { articleId, commentId },
     };
 }
 
 export function removeCommentError(error: any) {
     return {
-        type: REMOVE_COMMENT_ERROR,
+        type: REMOVE_COMMENT + ERROR,
         payload: error,
     };
 }
 
 export const removeComment = (articleId: string, commentId: string) => dispatch => {
 
-    dispatch(startRemoveComment(commentId));
+    dispatch(removeCommentStart(commentId));
 
     http.delete(`${env.api.comments.remove}/${commentId}`)
         .then(
             () => dispatch(removeCommentSuccess(articleId, commentId)),
-            error => dispatch(removeCommentError(error)),
+            error => dispatch(removeCommentError(error.message)),
         );
 };
 
 // Reducer
 const initialState = fromJS({
     articlesList: [],
-    loadingArticles: false,
-    errorLoadArticles: null,
 
+    loadingArticles: false,
     addingArticle: false,
-    errorAddArticle: null,
 
     removingArticleId: null,
-    errorRemoveArticle: null,
-
     addingCommentArticleId: null,
-    errorAddComment: null,
-
     removingCommentId: null,
-    errorRemoveComment: null,
+
+    addArticleError: null,
+    error: null,
 });
 
 const actionHandlers = {
-    [START_LOAD_ARTICLES]: state => state.set('loadingArticles', true),
-    [LOADING_ARTICLES_SUCCESS]: (state, { payload }) => state.merge({
+    [LOAD_ARTICLES + START]: state => state.set('loadingArticles', true),
+    [LOAD_ARTICLES + SUCCESS]: (state, { payload }) => state.merge({
+        loadingArticles: false,
+        error: null,
         articlesList: fromJS(payload.items),
-        errorLoadingArticles: null,
-        loadArticles: false,
     }),
-    [LOADING_ARTICLES_ERROR]: (state, { payload }) => state.merge({
-        errorLoadingArticles: payload,
-        loadArticles: false,
+    [LOAD_ARTICLES + ERROR]: (state, { payload }) => state.merge({
+        loadingArticles: false,
+        error: payload,
     }),
-    [START_ADD_ARTICLE]: state => state.set('addingArticle', true),
-    [ADD_ARTICLE_SUCCESS]: state => state.merge({
+    [ADD_ARTICLE + START]: state => state.set('addingArticle', true),
+    [ADD_ARTICLE + SUCCESS]: state => state.merge({
         addingArticle: false,
-        errorAddArticle: null,
+        addArticleError: null,
     }),
-    [ADD_ARTICLE_ERROR]: (state, { payload }) => state.merge({
+    [ADD_ARTICLE + ERROR]: (state, { payload }) => state.merge({
         addingArticle: false,
-        errorAddArticle: payload,
+        addArticleError: payload,
     }),
-    [START_REMOVE_ARTICLE]: (state, { payload }) => state.set('removingArticleId', payload),
-    [REMOVE_ARTICLE_SUCCESS]: (state, { payload }) => state
-        .set('removingArticleId', null)
-        .set('errorRemoveArticle', null)
+    [REMOVE_ARTICLE + START]: (state, { payload }) => state.set('removingArticleId', payload),
+    [REMOVE_ARTICLE + SUCCESS]: (state, { payload }) => state
+        .merge({ removingArticleId: null, error: null })
         .update(
             'articlesList',
             list => list.filter(article => article.get('slug') !== payload),
         ),
-    [REMOVE_ARTICLE_ERROR]: (state, { payload }) => state.merge({
+    [REMOVE_ARTICLE + ERROR]: (state, { payload }) => state.merge({
         removingArticleId: null,
-        errorRemoveArticle: payload,
+        error: payload,
     }),
-    [START_ADD_COMMENT]: (state, { payload }) => state.set('addingCommentArticleId', payload),
-    [ADD_COMMENT_SUCCESS]: state => state.merge({
+    [ADD_COMMENT + START]: (state, { payload }) => state.set('addingCommentArticleId', payload),
+    [ADD_COMMENT + SUCCESS]: state => state.merge({
         addingCommentArticleId: null,
-        errorRemoveComment: null,
+        error: null,
     }),
-    [ADD_COMMENT_ERROR]: (state, { payload }) => state.merge({
+    [ADD_COMMENT + ERROR]: (state, { payload }) => state.merge({
         addingCommentArticleId: null,
-        errorRemoveComment: payload,
+        error: payload,
     }),
-    [START_REMOVE_COMMENT]: (state, { payload }) => state.set('removingCommentId', payload),
-    [REMOVE_COMMENT_SUCCESS]: (state, { payload: { articleId, commentId } }) => {
-        return state
-            .set('removingCommentId', null)
-            .set('errorRemoveComment', null)
-            .update(
-                'articlesList',
-                list => list.map(article => article.get('_id') === articleId
-                    ? article.update(
-                        'comments',
-                        comments => comments.filter(comment => comment.get('id') !== commentId),
-                    )
-                    : article),
-            );
-    },
-    [REMOVE_COMMENT_ERROR]: (state, { payload }) => state.merge({
+    [REMOVE_COMMENT + START]: (state, { payload }) => state.set('removingCommentId', payload),
+    [REMOVE_COMMENT + SUCCESS]: (state, { payload: { articleId, commentId } }) => state
+        .merge({ removingCommentId: null, error: null })
+        .update(
+            'articlesList',
+            list => list.map(article => article.get('_id') === articleId
+                ? article.update(
+                    'comments',
+                    comments => comments.filter(comment => comment.get('id') !== commentId),
+                )
+                : article),
+        ),
+    [REMOVE_COMMENT + ERROR]: (state, { payload }) => state.merge({
         removingCommentId: null,
-        errorRemoveComment: payload,
+        error: payload,
     }),
 };
 

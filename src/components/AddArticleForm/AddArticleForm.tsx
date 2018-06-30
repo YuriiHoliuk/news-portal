@@ -2,10 +2,12 @@ import React, { Component, createRef, RefObject, SyntheticEvent } from 'react';
 
 import { IArticle } from '../../interfaces';
 import Button from '../Button';
+import { If } from '../../utils';
 
 export interface IAddArticleFormProps {
     addArticle: (newArticle: Partial<IArticle>) => any;
     loading: boolean;
+    error: string;
 }
 
 export default class AddArticleForm extends Component<IAddArticleFormProps, any> {
@@ -30,7 +32,7 @@ export default class AddArticleForm extends Component<IAddArticleFormProps, any>
 
     render() {
         const { title, text, image } = this.state;
-        const { loading } = this.props;
+        const { loading, error } = this.props;
 
         return (
             <form onSubmit={this.addArticle} ref={this.formRef}>
@@ -38,6 +40,10 @@ export default class AddArticleForm extends Component<IAddArticleFormProps, any>
                 <fieldset className='uk-fieldset'>
 
                     <legend className='uk-legend'>Add new Article</legend>
+
+                    <If condition={!!error}>
+                        <p className='uk-alert-danger' uk-alert=''>{error}</p>
+                    </If>
 
                     <input
                         className='uk-input uk-margin'
