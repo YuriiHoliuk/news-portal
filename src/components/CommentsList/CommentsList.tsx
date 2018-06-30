@@ -32,7 +32,7 @@ export default class CommentsList extends Component<ICommentsListProps, any> {
         const { comments, removeComment, addingComment, removingCommentId } = this.props;
 
         return (
-            <div style={{ fontStyle: 'italic' }}>
+            <div className='uk-margin-small-top' style={{ fontStyle: 'italic' }}>
                 {comments && !!comments.size && (
                     <Fragment>
                         <div className='uk-flex uk-flex-between uk-flex-middle'>
@@ -49,8 +49,8 @@ export default class CommentsList extends Component<ICommentsListProps, any> {
                         <If condition={isOpened}>
                             <ul>
                                 {comments.map(comment => {
-                                    const id = comment.get('_id');
-                                    const text = comment.get('text');
+                                    const id = comment.get('id');
+                                    const text = comment.get('comment');
 
                                     return (
                                         <Comment

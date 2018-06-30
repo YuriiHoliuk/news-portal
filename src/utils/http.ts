@@ -76,7 +76,7 @@ class Http {
 
                 return res;
             })
-            .then(res => res.json());
+            .then(res => res.json().catch(() => null));
     }
 }
 

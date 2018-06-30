@@ -1,15 +1,19 @@
 export interface IComment {
-    _id: string;
-    text: string;
-    article: string;
+    id: string;
+    comment: string;
+    author: string;
 }
 
 export interface IArticle {
     _id: string;
-    date: string;
+    slug: string;
+    author: string[];
     title: string;
     text: string;
-    comments?: IComment[];
+    publicatedAt: string;
+    createdAt: string;
+    comments: IComment[];
+    image?: string;
 }
 
 export interface IPagination {

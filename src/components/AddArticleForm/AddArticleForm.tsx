@@ -12,6 +12,7 @@ export default class AddArticleForm extends Component<IAddArticleFormProps, any>
     state = {
         title: '',
         text: '',
+        image: '',
     };
 
     formRef: RefObject<HTMLFormElement> = createRef();
@@ -23,12 +24,12 @@ export default class AddArticleForm extends Component<IAddArticleFormProps, any>
 
         if (this.formRef.current.checkValidity()) {
             this.props.addArticle(this.state);
-            this.setState({ title: '', text: '' });
+            this.setState({ title: '', text: '', image: '' });
         }
     }
 
     render() {
-        const { title, text } = this.state;
+        const { title, text, image } = this.state;
         const { loading } = this.props;
 
         return (
@@ -56,6 +57,15 @@ export default class AddArticleForm extends Component<IAddArticleFormProps, any>
                         value={text}
                         onChange={this.handleChange}
                         name='text'
+                    />
+
+                    <input
+                        className='uk-input uk-margin'
+                        placeholder={'Image'}
+                        value={image}
+                        onChange={this.handleChange}
+                        name='image'
+                        type='text'
                     />
 
                 </fieldset>

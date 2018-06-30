@@ -66,6 +66,7 @@ export default class Article extends Component<IArticleProps, IArticleState> {
         const title = article.get('title');
         const text = article.get('text');
         const comments = article.get('comments');
+        const image = article.get('image');
 
         const { isOpened } = this.state;
 
@@ -94,7 +95,18 @@ export default class Article extends Component<IArticleProps, IArticleState> {
                     </AppContext.Consumer>
                 </div>
 
+                <If condition={!!image && isOpened}>
+                    <img
+                        className='uk-margin-right uk-margin-small-bottom'
+                        style={{ maxWidth: '62%', height: 'auto', float: 'left', display: 'inline-block' }}
+                        src={image}
+                        alt='Article Illustration'
+                    />
+                </If>
+
                 <p ref={this.bodyRef}>{text}</p>
+
+                <div style={{ clear: 'left' }}/>
 
                 <If condition={isOpened}>
                     <CommentsList

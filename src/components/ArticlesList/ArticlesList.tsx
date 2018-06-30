@@ -35,15 +35,16 @@ export default class ArticlesList extends Component<IArticlesListProps, any> {
                 {articles && articles
                     .map(article => {
                             const id = article.get('_id');
+                            const slug = article.get('slug');
 
                             return (
                                 <Article
                                     removing={id === removingArticleId}
                                     addingComment={id === addingCommentArticleId}
                                     removingCommentId={removingCommentId}
-                                    removeComment={removeComment}
+                                    removeComment={removeComment.bind(null, id)}
                                     addComment={addComment.bind(null, id)}
-                                    remove={removeArticle.bind(null, id)}
+                                    remove={removeArticle.bind(null, slug)}
                                     key={id}
                                     article={article}
                                 />
