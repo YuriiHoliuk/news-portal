@@ -33,7 +33,7 @@ export interface ISignInRequest {
 
 export interface ISignUpRequest extends ISignInRequest {
     name: string;
-    confirm_password: string;
+    password_confirm: string;
 }
 
 export interface IUserData {

@@ -14,7 +14,7 @@ export default class SignUpForm extends Component<ISignUpFormProps, any> {
         email: '',
         name: '',
         password: '',
-        confirm_password: '',
+        password_confirm: '',
     };
 
     formRef: RefObject<HTMLFormElement> = createRef();
@@ -31,7 +31,7 @@ export default class SignUpForm extends Component<ISignUpFormProps, any> {
     }
 
     render() {
-        const { email, name, password, confirm_password } = this.state;
+        const { email, name, password, password_confirm } = this.state;
         const { loading, error } = this.props;
 
         return (
@@ -81,10 +81,10 @@ export default class SignUpForm extends Component<ISignUpFormProps, any> {
                         className='uk-input uk-margin'
                         placeholder={'Confirm Password'}
                         required={true}
-                        value={confirm_password}
+                        value={password_confirm}
                         onChange={this.handleChange}
                         minLength={6}
-                        name='confirm_password'
+                        name='password_confirm'
                         type='text'
                     />
 
