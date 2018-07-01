@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 
-import { addComment, loadArticles, removeArticle, removeComment } from '../../store/ducks';
+import { addComment, loadArticles, paginationInfo, removeArticle, removeComment } from '../../store/ducks';
 
 import ArticlesList from './ArticlesList';
 
@@ -10,6 +10,7 @@ export default connect((state: any) => ({
     removingArticleId: state.getIn(['articles', 'removingArticleId']),
     removingCommentId: state.getIn(['articles', 'removingCommentId']),
     error: state.getIn(['articles', 'error']),
+    pagination: paginationInfo(state),
 }), {
     loadArticles,
     removeArticle,

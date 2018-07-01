@@ -1,12 +1,16 @@
 import React, { Component } from 'react';
 import { List, Map } from 'immutable';
 
-import Article from '../Article';
 import { If } from '../../utils';
+
+import Article from '../Article';
+import Pagination from '../Pagination';
+
+import { IPaginationInfo } from '../../interfaces';
 
 interface IArticlesListProps {
     articles: List<Map<string, any>>;
-    loadArticles: () => any;
+    loadArticles: (page?: number) => any;
     removeArticle: (articleId: string) => any;
     removeComment: (commentId: string) => any;
     addComment: (articleId: string, text: string) => any;
@@ -14,6 +18,7 @@ interface IArticlesListProps {
     removingArticleId: string;
     removingCommentId: string;
     error: string;
+    pagination: IPaginationInfo;
 }
 
 export default class ArticlesList extends Component<IArticlesListProps, any> {
@@ -31,6 +36,8 @@ export default class ArticlesList extends Component<IArticlesListProps, any> {
             removingArticleId,
             removingCommentId,
             error,
+            pagination,
+            loadArticles,
         } = this.props;
 
         return (
@@ -59,6 +66,10 @@ export default class ArticlesList extends Component<IArticlesListProps, any> {
                             );
                         },
                     )}
+
+                {!!pagination && <div className='uk-flex uk-flex-center uk-width-1-1'>
+                    <Pagination changePage={loadArticles} {...pagination} />
+                </div>}
             </div>
         );
     }

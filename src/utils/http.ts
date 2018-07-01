@@ -24,7 +24,7 @@ class Http {
     }
 
     get(url: string, query?: { [key: string]: string | number }) {
-        return this.request(url, 'GET', null, query);
+        return this.request(url, 'GET', query);
     }
 
     post(url: string, body?: any, query?: { [key: string]: string | number }) {
@@ -62,7 +62,7 @@ class Http {
             headers,
         };
 
-        options = body ? { ...options, body: JSON.stringify(body) } : options;
+        options = body && method !== 'GET' ? { ...options, body: JSON.stringify(body) } : options;
 
         return fetch(`${this.baseUrl}${url}${queryString}`, options)
             .then(res => res.json().catch(() => null).then(data => ({ data, res })))

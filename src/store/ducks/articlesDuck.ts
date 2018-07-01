@@ -1,6 +1,8 @@
-import { fromJS } from 'immutable';
+import { fromJS, Map } from 'immutable';
+import { createSelector } from 'reselect';
 
 import { createReducer, http } from '../../utils';
+import store from '../';
 import { API_THUNK, IApiThunkAction } from '../middlewares';
 
 import { IArticle, IArticlesResponse } from '../../interfaces';
@@ -17,11 +19,17 @@ import {
 
 import { env } from '../../../environment/environment';
 
+const PER_PAGE = 10;
+const PAGES_RANGE = 3;
+
 // Action creators
-export const loadArticles = (): IApiThunkAction => {
+export const loadArticles = (_page?: number): IApiThunkAction => {
+    const _pagination = paginationInfo(store.getState());
+    const page = _page ? _page : _pagination ? _pagination.currentPage : 1;
+
     return {
         [API_THUNK]: {
-            request: () => http.get(env.api.articles.get),
+            request: () => http.get(env.api.articles.get, { page, per_page: PER_PAGE }),
             onStart: [LOAD_ARTICLES + START],
             onSuccess: [LOAD_ARTICLES + SUCCESS],
             onError: [LOAD_ARTICLES + ERROR],
@@ -106,15 +114,25 @@ const initialState = fromJS({
 
     addArticleError: null,
     error: null,
+    pagination: null,
 });
 
 const actionHandlers = {
     [LOAD_ARTICLES + START]: state => state.set('loadingArticles', true),
-    [LOAD_ARTICLES + SUCCESS]: (state, { payload }: { payload: IArticlesResponse }) => state.merge({
-        loadingArticles: false,
-        error: null,
-        articlesList: fromJS(payload.items),
-    }),
+    [LOAD_ARTICLES + SUCCESS]: (state, { payload }: { payload: IArticlesResponse }) => {
+        const { items, currentPage, isLast, total } = payload;
+
+        return state.merge({
+            loadingArticles: false,
+            error: null,
+            articlesList: fromJS(items),
+            pagination: Map({
+                currentPage: parseInt(currentPage, 10),
+                isLast,
+                total: parseInt(total, 10),
+            }),
+        });
+    },
     [LOAD_ARTICLES + ERROR]: (state, { payload }) => state.merge({
         loadingArticles: false,
         error: payload,
@@ -167,3 +185,31 @@ const actionHandlers = {
 };
 
 export const articlesReducer = createReducer(actionHandlers, initialState);
+
+const pagination = state => state.getIn(['articles', 'pagination']);
+const _currentPage = createSelector(pagination, _pagination => !!_pagination && _pagination.get('currentPage'));
+const _total = createSelector(pagination, _pagination => !!_pagination && _pagination.get('total'));
+
+export const paginationInfo = createSelector([_currentPage, _total], (currentPage, total) => {
+    if (!currentPage || !total) {
+        return null;
+    }
+
+    const totalPages = Math.ceil(total / PER_PAGE);
+
+    let pages = [];
+
+    for (let i = currentPage - PAGES_RANGE; i <= currentPage + PAGES_RANGE; i++) {
+        pages.push(i);
+    }
+
+    pages = pages.filter(page => page > 0 && page <= totalPages);
+
+    return {
+        pages,
+        currentPage,
+        lastPage: totalPages,
+        showFirst: currentPage > 1 + PAGES_RANGE,
+        showLast: currentPage < totalPages - PAGES_RANGE,
+    };
+});

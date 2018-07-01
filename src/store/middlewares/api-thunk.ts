@@ -38,7 +38,7 @@ export const apiThunk = store => next => action => {
             return request()
                 .then(
                     data => onSuccess.forEach(dispatcher(data)),
-                    error => onError.forEach(dispatcher(error)),
+                    error => onError.forEach(dispatcher(error.message || 'Something went wrong')),
                 );
         });
     }

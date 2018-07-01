@@ -17,9 +17,9 @@ export interface IArticle {
 }
 
 export interface IPagination {
-    currentPage: number;
+    currentPage: string;
     isLast: boolean;
-    total: number;
+    total: string;
 }
 
 export interface IArticlesResponse extends IPagination {
@@ -45,4 +45,12 @@ export interface IAuthResponse {
     token: string;
     ttl: number;
     account: IUserData;
+}
+
+export interface IPaginationInfo {
+    pages: number[];
+    lastPage: number;
+    currentPage: number;
+    showFirst: boolean;
+    showLast: boolean;
 }
