@@ -8,6 +8,7 @@ export interface IAddArticleFormProps {
     addArticle: (newArticle: Partial<IArticle>) => any;
     loading: boolean;
     error: string;
+    history: any;
 }
 
 export default class AddArticleForm extends Component<IAddArticleFormProps, any> {
@@ -24,9 +25,11 @@ export default class AddArticleForm extends Component<IAddArticleFormProps, any>
     addArticle = (event: SyntheticEvent<HTMLFormElement>) => {
         event.preventDefault();
 
+        const { addArticle, history } = this.props;
+
         if (this.formRef.current.checkValidity()) {
-            this.props.addArticle(this.state);
-            this.setState({ title: '', text: '', image: '' });
+            addArticle(this.state);
+            history.push('/');
         }
     }
 

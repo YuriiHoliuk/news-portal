@@ -10,6 +10,7 @@ export interface IAppProps {
     signOut: () => any;
     getAccount: () => any;
     token: string;
+    history: any;
 }
 
 export default class App extends Component<IAppProps, {}> {
@@ -23,20 +24,21 @@ export default class App extends Component<IAppProps, {}> {
     }
 
     render() {
-        const { isLoggedIn, account, signOut } = this.props;
+        const { isLoggedIn, account, signOut, history } = this.props;
 
         return (
             <div className='uk-padding'>
                 <AppContext.Provider value={{ proMode: isLoggedIn }}>
                     <AppHeader
+                        history={history}
                         signOut={signOut}
                         name={account && account.get('name')}
                         isLoggedIn={isLoggedIn}
                         title={'News Portal'}
                     />
-                </AppContext.Provider>
 
-                <Routes/>
+                    <Routes/>
+                </AppContext.Provider>
             </div>
         );
     }

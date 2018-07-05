@@ -7,4 +7,4 @@ export default withRouter(connect((state: any) => ({
     isLoggedIn: isLoggedIn(state),
     account: accountSelector(state),
     token: tokenSelector(state),
-}), { signOut, getAccount })(App));
+}), { signOut, getAccount })(App) as any);
