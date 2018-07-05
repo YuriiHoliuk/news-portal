@@ -11,7 +11,6 @@ export const env = {
             changePassword: '/user/change-password',
         },
         articles: {
-            main: '/article',
             get: '/article/get',
             add: '/article/create',
             update: '/article/update',

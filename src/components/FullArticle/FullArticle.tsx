@@ -7,9 +7,9 @@ import AppContext from '../../App/AppContext';
 
 export default class FullArticle extends Component<any, any> {
 
-    // componentDidMount() {
-    //     this.props.loadArticle(this.props.match.params.slug);
-    // }
+    componentDidMount() {
+        this.props.loadArticle(this.props.match.params.slug);
+    }
 
     remove = (slug) => () => {
         this.props.removeArticle(slug, () => this.props.history.push('/'));

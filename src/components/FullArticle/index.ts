@@ -8,9 +8,9 @@ export default connect((state: any, props: any) => ({
     removingArticleId: state.getIn(['articles', 'removingArticleId']),
     removingCommentId: state.getIn(['articles', 'removingCommentId']),
     error: state.getIn(['article', 'error']) || state.getIn(['articles', 'error']),
-    // article: state.getIn(['article', 'article']),
-    article: state.getIn(['articles', 'articlesList'])
-        .find(article => props.match.params.slug === article.get('slug')),
+    article: state.getIn(['article', 'article']),
+    // article: state.getIn(['articles', 'articlesList'])
+    //     .find(article => props.match.params.slug === article.get('slug')),
 }), {
     removeArticle,
     removeComment,

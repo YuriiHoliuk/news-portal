@@ -13,7 +13,7 @@ export const loadArticle = (slug: string): IApiThunkAction => {
 
     return {
         [API_THUNK]: {
-            request: () => http.get(`${env.api.articles.main}/${slug}`),
+            request: () => http.get(`${env.api.articles.get}/${slug}`).then(res => res.data[0]),
             onStart: [LOAD_ARTICLE + START],
             onSuccess: [LOAD_ARTICLE + SUCCESS],
             onError: [LOAD_ARTICLE + ERROR],
@@ -23,7 +23,7 @@ export const loadArticle = (slug: string): IApiThunkAction => {
 
 // Reducer
 const initialState = fromJS({
-    articles: null,
+    article: null,
     loading: false,
     error: null,
 });
@@ -34,7 +34,7 @@ const actionHandlers = {
         return state.merge({
             loading: false,
             error: null,
-            articles: fromJS(payload),
+            article: fromJS(payload),
         });
     },
     [LOAD_ARTICLE + ERROR]: (state, { payload }) => state.merge({
