@@ -8,6 +8,7 @@ import AddArticleForm from '../components/AddArticleForm';
 import PrivateRoute from '../components/PrivateRoute';
 import PublicRoute from '../components/PublicRoute';
 import FullArticle from '../components/FullArticle';
+import EditArticleForm from '../components/EditArticleForm';
 
 const Routes = props => (
     <Switch>
@@ -15,7 +16,7 @@ const Routes = props => (
         <PublicRoute path='/sign-in' component={SignInForm}/>
         <PublicRoute path='/sign-up' component={SignUpForm}/>
         <PrivateRoute path='/article/create' component={AddArticleForm}/>
-        <PrivateRoute path='/article/edit/:slug' component={AddArticleForm}/>
+        <PrivateRoute path='/article/edit/:slug' component={EditArticleForm}/>
         <Route path='/article/:slug' component={FullArticle}/>
     </Switch>
 );

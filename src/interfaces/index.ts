@@ -14,6 +14,15 @@ export interface IArticle {
     createdAt: string;
     comments: IComment[];
     image?: string;
+    isPublished?: boolean;
+}
+
+export interface IUpdateArticleData {
+    title: string;
+    text: string;
+    image?: string;
+    isPublished?: boolean;
+    publicatedAt?: string;
 }
 
 export interface IPagination {
