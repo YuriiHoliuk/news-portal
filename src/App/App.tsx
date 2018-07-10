@@ -1,14 +1,8 @@
 import React, { Component } from 'react';
-
-import { If } from '../utils';
-
-import ArticlesList from '../components/ArticlesList';
 import AppContext from './AppContext';
 
 import AppHeader from '../components/AppHeader';
-import AddArticleForm from '../components/AddArticleForm';
-import SignInForm from '../components/SignInForm';
-import SignUpForm from '../components/SignUpForm';
+import Routes from '../Routes';
 
 export interface IAppProps {
     isLoggedIn: boolean;
@@ -16,6 +10,7 @@ export interface IAppProps {
     signOut: () => any;
     getAccount: () => any;
     token: string;
+    history: any;
 }
 
 export default class App extends Component<IAppProps, {}> {
@@ -29,34 +24,20 @@ export default class App extends Component<IAppProps, {}> {
     }
 
     render() {
-        const { isLoggedIn, account, signOut } = this.props;
+        const { isLoggedIn, account, signOut, history } = this.props;
 
         return (
             <div className='uk-padding'>
                 <AppContext.Provider value={{ proMode: isLoggedIn }}>
                     <AppHeader
+                        history={history}
                         signOut={signOut}
                         name={account && account.get('name')}
                         isLoggedIn={isLoggedIn}
                         title={'News Portal'}
                     />
 
-                    <If condition={!isLoggedIn}>
-                        <div className='uk-flex uk-margin-large-bottom'>
-                            <div className='uk-margin-large-right'>
-                                <SignInForm/>
-                            </div>
-                            <div className='uk-margin-large-left'>
-                                <SignUpForm/>
-                            </div>
-                        </div>
-                    </If>
-
-                    <ArticlesList/>
-
-                    <If condition={isLoggedIn}>
-                        <AddArticleForm/>
-                    </If>
+                    <Routes/>
                 </AppContext.Provider>
             </div>
         );

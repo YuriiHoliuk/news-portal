@@ -58,7 +58,6 @@ class Http {
 
         let options: any = {
             method,
-            mode: 'cors',
             headers,
         };
 

@@ -7,6 +7,7 @@ export interface ISignInFormProps {
     signIn: (data: ISignInRequest) => any;
     loading: boolean;
     error: string;
+    history: any;
 }
 
 export default class SignInForm extends Component<ISignInFormProps, any> {
@@ -23,8 +24,8 @@ export default class SignInForm extends Component<ISignInFormProps, any> {
         event.preventDefault();
 
         if (this.formRef.current.checkValidity()) {
-            this.props.signIn(this.state);
-            // this.setState({ email: '', password: '' });
+            this.props.signIn(this.state)
+                .then(() => this.props.history.push('/'));
         }
     }
 

@@ -4,16 +4,20 @@ import Modal from 'react-modal';
 
 interface IWithRemoveModalState {
     isModalOpened: boolean;
+    data: any;
+    afterRemove: (...args) => any;
 }
 
 export interface IWithRemoveModalProps {
     remove: () => void;
 }
 
-export function withRemoveModal(InnerComponent: any): any {
+export function withRemoveModal(InnerComponent: any, removePropName: string = 'remove'): any {
     return class extends Component<IWithRemoveModalProps, IWithRemoveModalState> {
         state = {
             isModalOpened: false,
+            data: null,
+            afterRemove: null,
         };
 
         modalStyles = {
@@ -26,21 +30,26 @@ export function withRemoveModal(InnerComponent: any): any {
             },
         };
 
-        openRemoveModal = () => this.setState({ isModalOpened: true });
+        openRemoveModal = (data?, afterRemove?) => this.setState({ isModalOpened: true, data, afterRemove });
 
         accept = () => {
             this.setState({ isModalOpened: false });
-            this.props.remove();
+            this.props[removePropName](this.state.data);
+            if (this.state.afterRemove && typeof this.state.afterRemove === 'function') {
+                this.state.afterRemove();
+            }
+            this.setState({ data: null, afterRemove: null });
         }
 
         decline = () => this.setState({ isModalOpened: false });
 
         render() {
             const { isModalOpened } = this.state;
+            const props = { ...this.props, [removePropName]: this.openRemoveModal };
 
             return (
                 <Fragment>
-                    <InnerComponent {...this.props} remove={this.openRemoveModal}/>
+                    <InnerComponent {...props} />
 
                     <Modal ariaHideApp={false} style={this.modalStyles} isOpen={isModalOpened}>
                         <div className='uk-modal-body'>

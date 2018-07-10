@@ -6,6 +6,9 @@ export const LOAD_ARTICLES = 'LOAD ARTICLES';
 export const ADD_ARTICLE = 'ADD ARTICLE';
 export const REMOVE_ARTICLE = 'REMOVE ARTICLE';
 
+export const LOAD_ARTICLE = 'LOAD ARTICLE';
+export const EDIT_ARTICLE = 'EDIT ARTICLE';
+
 export const REMOVE_COMMENT = 'REMOVE COMMENT';
 export const ADD_COMMENT = 'ADD COMMENT';
 

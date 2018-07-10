@@ -8,6 +8,7 @@ import { If } from '../../utils';
 import AppContext from '../../App/AppContext';
 import CommentsList from '../CommentsList';
 import Button from '../Button';
+import { Link } from 'react-router-dom';
 
 export interface IArticleProps {
     article: Map<string, any>;
@@ -65,6 +66,7 @@ export default class Article extends Component<IArticleProps, IArticleState> {
 
         const title = article.get('title');
         const text = article.get('text');
+        const slug = article.get('slug');
         const comments = article.get('comments');
         const image = article.get('image');
 
@@ -75,12 +77,9 @@ export default class Article extends Component<IArticleProps, IArticleState> {
                 <div className='uk-flex uk-flex-middle uk-margin'>
                     <h2 className='uk-heading-secondary uk-margin-remove-bottom uk-margin-right'>{title}</h2>
 
-                    <button
-                        className='uk-button uk-button-default'
-                        onClick={this.toggle}
-                    >
-                        {isOpened ? 'hide' : 'show'} article
-                    </button>
+                    <Link to={`/article/${slug}`}>
+                        <span className='uk-button uk-button-default'>Open article</span>
+                    </Link>
 
                     <AppContext.Consumer>
                         {({ proMode }) => proMode && (

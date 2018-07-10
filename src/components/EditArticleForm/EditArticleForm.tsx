@@ -1,44 +1,74 @@
 import React, { Component, createRef, RefObject, SyntheticEvent } from 'react';
+import { Map } from 'immutable';
 
-import { IArticle } from '../../interfaces';
+import { IUpdateArticleData } from '../../interfaces';
 import Button from '../Button';
 import { If } from '../../utils';
 
 export interface IAddArticleFormProps {
-    addArticle: (newArticle: Partial<IArticle>) => any;
     loading: boolean;
     error: string;
     history: any;
+    match: any;
+    article: Map<any, any>;
+    loadArticle: (slug: string) => any;
+    editArticle: (slug: string, data: IUpdateArticleData) => any;
 }
 
-export default class AddArticleForm extends Component<IAddArticleFormProps, any> {
-    state = {
+export default class EditArticleForm extends Component<IAddArticleFormProps, any> {
+    state: IUpdateArticleData = {
         title: '',
         text: '',
         image: '',
+        // publicatedAt: '',
+        // isPublished: true,
     };
+
+    slug: string;
 
     formRef: RefObject<HTMLFormElement> = createRef();
 
+    componentDidMount() {
+        this.props.article
+            ? this.setArticle()
+            : this.props.loadArticle(this.props.match.params.slug);
+    }
+
+    componentDidUpdate(prevProps) {
+        if (!prevProps.article && this.props.article) {
+            this.setArticle();
+        }
+    }
+
+    setArticle() {
+        const { article } = this.props;
+
+        const title = article.get('title');
+        const text = article.get('text');
+        const image = article.get('image');
+
+        this.setState({ title, text, image });
+    }
+
     handleChange = ({ target: { name, value } }) => this.setState({ [name]: value });
 
-    addArticle = (event: SyntheticEvent<HTMLFormElement>) => {
+    editArticle = (event: SyntheticEvent<HTMLFormElement>) => {
         event.preventDefault();
 
-        const { addArticle, history } = this.props;
+        const { editArticle, history, article } = this.props;
 
         if (this.formRef.current.checkValidity()) {
-            addArticle(this.state);
+            editArticle(article.get('slug'), this.state);
             history.push('/');
         }
     }
 
     render() {
         const { title, text, image } = this.state;
-        const { loading, error } = this.props;
+        const { loading, error, article } = this.props;
 
-        return (
-            <form onSubmit={this.addArticle} ref={this.formRef}>
+        return article ? (
+            <form onSubmit={this.editArticle} ref={this.formRef}>
 
                 <fieldset className='uk-fieldset'>
 
@@ -80,9 +110,9 @@ export default class AddArticleForm extends Component<IAddArticleFormProps, any>
                 </fieldset>
 
                 <Button type='submit' className='uk-button uk-button-primary' loading={loading}>
-                    Add Article
+                    Edit Article
                 </Button>
             </form>
-        );
+        ) : <div>Loading Article data...</div>;
     }
 }
