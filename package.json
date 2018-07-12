@@ -37,10 +37,16 @@
     ]
   },
   "devDependencies": {
+    "@types/immutable": "^3.8.7",
     "@types/lodash": "^4.14.109",
     "@types/react": "^16.3.16",
     "@types/react-dom": "^16.0.6",
     "@types/react-redux": "^6.0.2",
+    "@types/react-router": "^4.0.28",
+    "@types/react-router-dom": "^4.2.7",
+    "@types/redux-form": "^7.4.1",
+    "@types/redux-thunk": "^2.1.0",
+    "@types/reselect": "^2.2.0",
     "autoprefixer": "^8.6.0",
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.3",
@@ -76,8 +82,6 @@
     "webpack-merge": "^4.1.2"
   },
   "dependencies": {
-    "@types/react-router": "^4.0.28",
-    "@types/react-router-dom": "^4.2.7",
     "history": "^4.7.2",
     "immutable": "^3.8.2",
     "lodash": "^4.17.10",
@@ -89,6 +93,8 @@
     "react-router-dom": "^4.3.1",
     "redux": "^4.0.0",
     "redux-devtools-extension": "^2.13.2",
+    "redux-form": "^7.4.2",
+    "redux-form-immutable": "^6.3.2",
     "redux-immutable": "^4.0.0",
     "redux-thunk": "^2.3.0",
     "reselect": "^3.0.1",

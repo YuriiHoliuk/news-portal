@@ -1,0 +1,7 @@
+export const SIGN_IN_FORM = 'SIGN IN FORM';
+export const SIGN_UP_FORM = 'SIGN UP FORM';
+
+export const ADD_ARTICLE_FORM = 'ADD ARTICLE FORM';
+export const EDIT_ARTICLE_FORM = 'EDIT ARTICLE FORM';
+
+export const ADD_COMMENT_FORM = 'ADD COMMENT FORM';

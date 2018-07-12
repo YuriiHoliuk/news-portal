@@ -10,7 +10,7 @@ import PublicRoute from '../components/PublicRoute';
 import FullArticle from '../components/FullArticle';
 import EditArticleForm from '../components/EditArticleForm';
 
-const Routes = props => (
+const Routes = () => (
     <Switch>
         <Route path='/' exact component={ArticlesList}/>
         <PublicRoute path='/sign-in' component={SignInForm}/>
