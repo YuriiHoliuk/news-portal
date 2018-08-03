@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 
 import { IArticle } from '../../interfaces';
 import Button from '../Button';
-import { Field } from 'redux-form';
-// import Input from '../Input';
-// import Textarea from '../Textarea';
+import { Field } from 'redux-form/immutable';
+import Input from '../Input';
+import Textarea from '../Textarea';
 
 export interface IAddArticleFormProps {
     addArticle: (newArticle: Partial<IArticle>) => any;
@@ -38,14 +38,14 @@ export default class AddArticleForm extends Component<IAddArticleFormProps, any>
 
                     <Field
                         placeholder='Title'
-                        component={'input'}
+                        component={Input}
                         name='title'
                         type='text'
                     />
 
                     <Field
                         placeholder='Text'
-                        component={'textarea'}
+                        component={Textarea}
                         name='text'
                     />
 
@@ -53,7 +53,7 @@ export default class AddArticleForm extends Component<IAddArticleFormProps, any>
                         placeholder='Image'
                         name='image'
                         type='text'
-                        component={'input'}
+                        component={Input}
                     />
 
                 </fieldset>

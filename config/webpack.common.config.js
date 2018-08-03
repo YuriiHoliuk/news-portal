@@ -9,13 +9,14 @@ const commonPaths = require('./common-paths');
 module.exports = env => {
     const environment = env.environment;
 
-    const config = {
+    return {
         entry: {
             main: ['./src/index.tsx']
         },
         output: {
             filename: '[name].js',
-            path: commonPaths.outputPath
+            path: commonPaths.outputPath,
+            publicPath: '/'
         },
         resolve: {
             extensions: ['.js', '.jsx', '.ts', '.tsx']
@@ -83,6 +84,9 @@ module.exports = env => {
                 }
             ]
         },
+        devServer: {
+            historyApiFallback: true
+        },
         optimization: {
             splitChunks: {
                 cacheGroups: {
@@ -110,6 +114,4 @@ module.exports = env => {
             ),
         ]
     };
-
-    return config;
 };

@@ -10,6 +10,7 @@
     "no-object-literal-type-assertion": false,
     "variable-name": false,
     "jsx-boolean-value": false,
-    "jsx-no-lambda": false
+    "jsx-no-lambda": false,
+    "no-submodule-imports": false
   }
 }
